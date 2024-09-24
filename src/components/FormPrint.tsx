@@ -141,7 +141,7 @@ const PrintableFormData = observer((props: any) => {
                     <td style={cellStyle}> {dateOfDeath}</td>
                     <td style={cellStyle}>{placeOfDeath}</td>
                     <td style={cellStyle}> {causeOfDeath}</td>
-                    <td style={cellStyle}>{certified}</td>
+                    <td style={cellStyle}>{certified ? "YES" : "NO"}</td>
                 </tr>
                 </tbody>
             </table>
