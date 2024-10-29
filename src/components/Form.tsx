@@ -1470,7 +1470,9 @@ export const DataEntryForm = observer(() => {
 
 		};
 		// "https://icd.who.int/doris/api/ucod/underlyingcauseofdeath/ICD11"
-		const url = "https://ug.sk-engine.cloud/icd-api/icd/release/11/2023-01/doris?" + new URLSearchParams(payload);
+        // const burl = "https://ug.sk-engine.cloud/icd-api";
+        const burl = "https://hmis-dev.health.go.ug";
+		const url = burl + "/icd/release/11/2023-01/doris?" + new URLSearchParams(payload);
 		const res = await fetch(url, {
 			// body: JSON.stringify(payload),
 			method: 'GET',
@@ -4488,7 +4490,7 @@ export const DataEntryForm = observer(() => {
                                 </Form.Item>
                             </td>
                         </tr>
-                        {store.isAdmin && (
+                        
                             <>
                                 <tr>
                                     <td className="border p-1" colSpan={2}>
@@ -4582,7 +4584,7 @@ export const DataEntryForm = observer(() => {
                                     </td>
                                 </tr>
                             </>
-                        )}
+                        
 
 
 
