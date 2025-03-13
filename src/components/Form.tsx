@@ -134,6 +134,7 @@ export const DataEntryForm = observer(() => {
     const [chosenRegion, setChosenRegion] = useState("");
     const [chosenDistrict, setChosenDistrict] = useState("");
     const [chosenFacility, setChosenFacility] = useState("");
+    const [subCountyOptions, setSubCountyOptions] = useState<any[]>([]);
 
     const [chosenRegionToSubmit, setChosenRegionToSubmit] = useState("");
     const [chosenDistrictToSubmit, setChosenDistrictToSubmit] = useState("");
@@ -264,6 +265,41 @@ export const DataEntryForm = observer(() => {
 
     // End of Testing
     const [fromReview, setFromReview] = useState(false);
+
+
+    //subcounties
+    useEffect(() => {
+        if (chosenDistrictToSubmit) {
+            fetchSubCounties();
+        }
+    }, [chosenDistrictToSubmit]);
+
+    const fetchSubCounties = async () => {
+        try {
+            const response = await fetch(
+                "api/organisationUnits.json?level=5&paging=false&fields=id,displayName,level,parent[id,displayName,level,parent[id,displayName,level]]"
+            );
+            const data = await response.json();
+
+            if (data?.organisationUnits?.length) {
+                // Filter sub-counties where the district (level 3) matches chosenDistrictToSubmit
+                const matchingSubCounties = data.organisationUnits
+                    .filter((unit: any) =>
+                        unit?.parent?.parent?.level === 3 &&
+                        unit.parent.parent.displayName === chosenDistrictToSubmit
+                    )
+                    .map((unit: any) => ({
+                        id: unit.id,
+                        displayName: unit.displayName
+                    }));
+
+                // console.log("Matching Sub-Counties:", matchingSubCounties);
+                setSubCountyOptions(matchingSubCounties);
+            }
+        } catch (error) {
+            console.error("Error fetching sub-counties:", error);
+        }
+    };
 
     const onFinish = async (values: any) => {
         // if (!store.selectedNationality) {
@@ -2679,25 +2715,40 @@ export const DataEntryForm = observer(() => {
                                     name="t5nTEmlScSt"
                                     className="m-0"
                                 >
-                                    <DistSearchPopup
-                                        // limitedArray={limitedArray}
-                                        parentName={chosenDistrictToSubmit}
-                                        disabled={
-                                            store.viewMode ||
-                                            store.allDisabled.t5nTEmlScSt
+                                    <Select
+                                        placeholder="Select Sub-County"
+                                        // disabled={!chosenDistrictToSubmit}
+                                        allowClear
+                                        showSearch
+                                        filterOption={(input, option) =>
+                                            (option?.children as string)?.toLowerCase().includes(input.toLowerCase())
                                         }
-                                        searchType={
-                                            validSearchTypes.subCounty
-                                        }
-                                        setDictatedContent={
-                                            setChosenDistrict
-                                        }
-                                        // limitedArrayParent={limitedArrayParent}
-                                        dictatedContent={chosenSubCounty}
-                                        receiveOutput={(text: any) =>
-                                            setChosenSubcounty(`${text}`)
-                                        }
-                                    />
+                                    >
+                                        {subCountyOptions.map(({ id, displayName }) => (
+                                            <Option key={id} value={id}>
+                                                {displayName}
+                                            </Option>
+                                        ))}
+                                    </Select>
+                                    {/*<DistSearchPopup*/}
+                                    {/*    // limitedArray={limitedArray}*/}
+                                    {/*    parentName={chosenDistrictToSubmit}*/}
+                                    {/*    disabled={*/}
+                                    {/*        store.viewMode ||*/}
+                                    {/*        store.allDisabled.t5nTEmlScSt*/}
+                                    {/*    }*/}
+                                    {/*    searchType={*/}
+                                    {/*        validSearchTypes.subCounty*/}
+                                    {/*    }*/}
+                                    {/*    setDictatedContent={*/}
+                                    {/*        setChosenDistrict*/}
+                                    {/*    }*/}
+                                    {/*    // limitedArrayParent={limitedArrayParent}*/}
+                                    {/*    dictatedContent={chosenSubCounty}*/}
+                                    {/*    receiveOutput={(text: any) =>*/}
+                                    {/*        setChosenSubcounty(`${text}`)*/}
+                                    {/*    }*/}
+                                    {/*/>*/}
                                 </Form.Item>
                             </td>
 
