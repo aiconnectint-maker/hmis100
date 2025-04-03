@@ -131,7 +131,7 @@ export const DistrictSearchPopup: SFC<SearchType> = observer(
       if (typeof item?.displayName === "string") {
         setSearchString(item.displayName);
         // Save the output
-        receiveOutput(item.displayName);
+        receiveOutput(item.displayName, item.id);
       }
 
       // If this is a sub County that has been chosen, set the district

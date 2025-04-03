@@ -140,6 +140,7 @@ export const DataEntryForm = observer(() => {
     const [chosenDistrictToSubmit, setChosenDistrictToSubmit] = useState("");
     const [chosenFacilityToSubmit, setChosenFacilityToSubmit] = useState("");
     const [chosenSubCounty, setChosenSubcounty] = useState("");
+    const [chosenDistrictId, setChosenDistrictId] = useState("");
 
     //blacklist
     const blacklistedValues = ["N"];
@@ -272,34 +273,67 @@ export const DataEntryForm = observer(() => {
         if (chosenDistrictToSubmit) {
             fetchSubCounties();
         }
-    }, [chosenDistrictToSubmit]);
+    }, [chosenDistrictId]);
 
     const fetchSubCounties = async () => {
         try {
             const response = await fetch(
-                "api/organisationUnits.json?level=5&paging=false&fields=id,displayName,level,parent[id,displayName,level,parent[id,displayName,level]]"
+                `https://hmis-dev.health.go.ug/api/organisationUnits/${chosenDistrictId}?paging=false&fields=level,id,children[id,displayName,level]`
             );
             const data = await response.json();
+            console.log("sub data", data);
 
-            if (data?.organisationUnits?.length) {
-                // Filter sub-counties where the district (level 3) matches chosenDistrictToSubmit
-                const matchingSubCounties = data.organisationUnits
-                    .filter((unit: any) =>
-                        unit?.parent?.parent?.level === 3 &&
-                        unit.parent.parent.displayName === chosenDistrictToSubmit
-                    )
-                    .map((unit: any) => ({
-                        id: unit.id,
-                        displayName: unit.displayName
+            if (data?.children?.length) {
+                // Extract sub-counties (level 4) from the response
+                const matchingSubCounties = data.children
+                    .filter((child: any) => child.level === 4) // Ensure they are sub-counties
+                    .map((child: any) => ({
+                        id: child.id,
+                        displayName: child.displayName,
                     }));
 
-                // console.log("Matching Sub-Counties:", matchingSubCounties);
+                console.log("Matching Sub-Counties:", matchingSubCounties);
                 setSubCountyOptions(matchingSubCounties);
+            } else {
+                setSubCountyOptions([]); // Clear options if no children found
             }
         } catch (error) {
             console.error("Error fetching sub-counties:", error);
         }
     };
+
+    // const fetchSubCounties = async () => {
+    //
+    //     // console.log("dist", chosenDistrictToSubmit);
+    //     // console.log("district id", chosenDistrictId);
+    //     try {
+    //         const response = await fetch(
+    //             // "api/organisationUnits.json?level=5&paging=false&fields=id,displayName,level,parent[id,displayName,level,parent[id,displayName,level]]"
+    //             // "https://hmis-dev.health.go.ug/api/organisationUnits.json?level=5&paging=false&fields=id,displayName,level,parent[id,displayName,level,parent[id,displayName,level]]"
+    //             `https://hmis-dev.health.go.ug/api/organisationUnits/${chosenDistrictId}?paging=false&fields=level,id,children[id,displayName,level]`
+    //         );
+    //         const data = await response.json();
+    //         console.log("sub data", chosenDistrictId);
+    //
+    //         if (data?.organisationUnits?.length) {
+    //             // Filter sub-counties where the district (level 3) matches chosenDistrictToSubmit
+    //             const matchingSubCounties = data.organisationUnits
+    //                 .filter((unit: any) =>
+    //                     unit?.parent?.parent?.level === 3 &&
+    //                     unit.parent.parent.displayName === chosenDistrictToSubmit
+    //                 )
+    //                 .map((unit: any) => ({
+    //                     id: unit.id,
+    //                     displayName: unit.displayName
+    //                 }));
+    //
+    //             // console.log("Matching Sub-Counties:", matchingSubCounties);
+    //             setSubCountyOptions(matchingSubCounties);
+    //         }
+    //     } catch (error) {
+    //         console.error("Error fetching sub-counties:", error);
+    //     }
+    // };
 
     const onFinish = async (values: any) => {
         // if (!store.selectedNationality) {
@@ -2547,21 +2581,22 @@ export const DataEntryForm = observer(() => {
                                 >
                                     <DistSearchPopup
                                         disabled={
-                                            store.viewMode ||
-                                            store.allDisabled.u44XP9fZweA
+                                            store.viewMode || store.allDisabled.u44XP9fZweA
                                         }
-                                        searchType={
-                                            validSearchTypes.district
-                                        }
+                                        searchType={validSearchTypes.district}
                                         parentName={chosenRegionToSubmit}
                                         // setLimitedArray={setLimitedDistrictParent}
                                         dictatedContent={chosenDistrict}
                                         // setLimitedArrayParent={setLimitedRegionParent}
-                                        receiveOutput={(text: any) =>
-                                            setChosenDistrictToSubmit(
-                                                `${text}`
-                                            )
-                                        }
+                                        // receiveOutput={(text: any) =>
+                                        //     setChosenDistrictToSubmit(
+                                        //         `${text}`
+                                        //     )
+                                        // }
+                                        receiveOutput={(text: string, id: string) => {
+                                            setChosenDistrictToSubmit(text);
+                                            setChosenDistrictId(id); // Store the district ID
+                                        }}
                                     />
                                 </Form.Item>
                                 {/* <Form.Item name="bNpMzyShDCX" className="m-0">
