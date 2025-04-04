@@ -38,7 +38,6 @@ import Declarations from "./Declarations";
 // Languages
 import englishString from "../assets/english.json";
 import frenchString from "../assets/french.json";
-import {AnyARecord} from "dns";
 import {useNinApi} from "../utils/ninApi"
 import {useTranslation} from "../utils/useTranslation";
 import {dateFields, mcodmap} from "../Store";
@@ -131,7 +130,7 @@ export const DataEntryForm = observer(() => {
     const [limitedArray, setLimitedArray] = useState(anyArrayType);
     const [limitedDistrictParent, setLimitedDistrictParent] = useState("");
     const [limitedRegionParent, setLimitedRegionParent] = useState("");
-    const [chosenRegion, setChosenRegion] = useState("");
+    // const [chosenRegion, setChosenRegion] = useState("");
     const [chosenDistrict, setChosenDistrict] = useState("");
     const [chosenFacility, setChosenFacility] = useState("");
     const [subCountyOptions, setSubCountyOptions] = useState<any[]>([]);
@@ -141,6 +140,13 @@ export const DataEntryForm = observer(() => {
     const [chosenFacilityToSubmit, setChosenFacilityToSubmit] = useState("");
     const [chosenSubCounty, setChosenSubcounty] = useState("");
     const [chosenDistrictId, setChosenDistrictId] = useState("");
+
+    //new region, district dropdowns
+    const [regions, setRegions] = useState([]);
+    const [chosenRegion, setChosenRegion] = useState(null);
+    const [selectedRegion, setSelectedRegion] = useState(null);
+    const [districts, setDistricts] = useState([]);
+
 
     //blacklist
     const blacklistedValues = ["N"];
@@ -169,7 +175,8 @@ export const DataEntryForm = observer(() => {
     const [showPregnancyReminder, setShowPregnancyReminder] = useState(false);
     const [enablePregnantQn, setEnablePregnantQn] = useState(false);
     const [enablePregnantQnKey, setEnablePregnantQnKey] = useState("6");
-    const [personsAge, setPersonsAge] = useState(1);
+    const [personsAge, setPersonsAge] = useState(0);
+    const [personsAgeInDays, setPersonsAgeInDays] = useState(0);
     const [personsGender, setPersonsGender] = useState("");
     const [womanWasPregnant, setWomanWasPregnant] = useState(false);
 
@@ -268,6 +275,41 @@ export const DataEntryForm = observer(() => {
     const [fromReview, setFromReview] = useState(false);
 
 
+    useEffect(() => {
+        const fetchRegions = async () => {
+            try {
+                const allRegionsReceived = await store.getRegions();
+                setRegions(allRegionsReceived.organisationUnits);
+            } catch (error) {
+                console.error("Error fetching regions:", error);
+            }
+        };
+
+        fetchRegions();
+    }, []);
+
+
+    // Handle region change
+    const handleRegionChange = (regionId) => {
+        const selected = regions.find((region) => region.id === regionId);
+        setSelectedRegion(regionId);
+        setDistricts(selected?.children || []); // Update districts based on selected region
+    };
+
+    // Handle district change
+    const handleDistrictChange = (districtId) => {
+        const selectedDistrict = districts.find((district) => district.id === districtId);
+        setChosenDistrict(districtId);
+        console.log("Chosen district:", selectedDistrict.displayName);
+        setChosenDistrictToSubmit(selectedDistrict.displayName); // Set chosen district to submit
+        setChosenDistrictId(districtId); // Store district ID
+    };
+
+    // console.log("set reions",regions)
+    // console.log("set district",districts)
+    // console.log("chosen district",chosenDistrictToSubmit)
+    // console.log("chosen district",chosenDistrictId)
+
     //subcounties
     useEffect(() => {
         if (chosenDistrictToSubmit) {
@@ -276,8 +318,10 @@ export const DataEntryForm = observer(() => {
     }, [chosenDistrictId]);
 
     const fetchSubCounties = async () => {
+
         try {
             const response = await fetch(
+                // `/api/organisationUnits/${chosenDistrictId}?paging=false&fields=level,id,children[id,displayName,level]`
                 `https://hmis-dev.health.go.ug/api/organisationUnits/${chosenDistrictId}?paging=false&fields=level,id,children[id,displayName,level]`
             );
             const data = await response.json();
@@ -380,7 +424,7 @@ export const DataEntryForm = observer(() => {
                     program: 'vf8dN49jprI',
                     programStage: 'aKclf7Yl1PE',
                     // eventDate: moment(),
-                    eventDate:  form.getFieldValue("i8rrl8YWxLF"),
+                    eventDate: form.getFieldValue("i8rrl8YWxLF"),
                     dataValues: [
                         {dataElement: 'ZKBE8Xm9DJG', value: values['ZKBE8Xm9DJG']},
                         {dataElement: 'MOstDqSY0gO', value: values['MOstDqSY0gO']},
@@ -449,7 +493,7 @@ export const DataEntryForm = observer(() => {
 
             } //close if stored data
 
-                // console.log("filtered", filteredData)
+            // console.log("filtered", filteredData)
 
 
         } else {
@@ -587,23 +631,23 @@ export const DataEntryForm = observer(() => {
         //     window.close();
         // } else {
 
-            if (!!fromReview) {
-                if (window !== window.parent) {
-                    // Your app is loaded in an iframe, so close the iframe
-    				(window.parent as any).closeIframe();
-                } else {
-                    // Your app is not in an iframe, so close the window
-                    // window.close();
-                    localStorage.clear()
-                        // window.location.href = "/";
-                    // window.location.href = "/api/apps/Medical-Certificate-of-Cause-of-Death/index.html";
-                    store.showEvents();
-                    // store.enableForm();        
-                }
+        if (!!fromReview) {
+            if (window !== window.parent) {
+                // Your app is loaded in an iframe, so close the iframe
+                (window.parent as any).closeIframe();
             } else {
+                // Your app is not in an iframe, so close the window
+                // window.close();
+                localStorage.clear()
+                // window.location.href = "/";
+                // window.location.href = "/api/apps/Medical-Certificate-of-Cause-of-Death/index.html";
                 store.showEvents();
-                store.enableForm();
+                // store.enableForm();
             }
+        } else {
+            store.showEvents();
+            store.enableForm();
+        }
         // }
     }
 
@@ -1468,30 +1512,30 @@ export const DataEntryForm = observer(() => {
         const intervalDVal = form.getFieldValue("eCVDO6lt4go");
         const intervalD = (!!intervalDType && !!intervalDVal) ? moment.duration({[intervalDType]: intervalDVal}).toISOString() : null;
 
-		const dateOfDeath = moment(actualTimeOfDeath);
-		const ageOfIndividual = form.getFieldValue("q7e7FOXKnOf");
-		const dateOfBirth = form.getFieldValue("RbrUuKFSqkZ");
-		const wasPregnant = form.getFieldValue("zcn7acUB6x1");
-		const pregnacyContribute = form.getFieldValue("AJAraEcfH63")
-		const pregTime = form.getFieldValue("KpfvNQSsWIw");
-		const others = [
-            { 
+        const dateOfDeath = moment(actualTimeOfDeath);
+        const ageOfIndividual = form.getFieldValue("q7e7FOXKnOf");
+        const dateOfBirth = form.getFieldValue("RbrUuKFSqkZ");
+        const wasPregnant = form.getFieldValue("zcn7acUB6x1");
+        const pregnacyContribute = form.getFieldValue("AJAraEcfH63")
+        const pregTime = form.getFieldValue("KpfvNQSsWIw");
+        const others = [
+            {
                 code: form.getFieldValue("ctbKSNV2cg7"),
                 uri: form.getFieldValue("T4uxg60Lalw"),
             },
-            { 
+            {
                 code: form.getFieldValue("krhrEBwJeNC"),
                 // uri: form.getFieldValue("T4uxg60Lalw"),
             },
-            { 
+            {
                 code: form.getFieldValue("ZKtS7L49Poo"),
                 // uri: form.getFieldValue("T4uxg60Lalw"),
             },
-            { 
+            {
                 code: form.getFieldValue("fJDDc9mlubU"),
                 // uri: form.getFieldValue("T4uxg60Lalw"),
             },
-            { 
+            {
                 code: form.getFieldValue("z89Wr84V2G6"),
                 // uri: form.getFieldValue("T4uxg60Lalw"),
             }
@@ -1500,70 +1544,70 @@ export const DataEntryForm = observer(() => {
         console.log("others obj", others)
 
         const otherCodes = others
-            .filter(item => item.code) 
+            .filter(item => item.code)
             .map(item => item.code)
             .join(',');
 
         const otherUris = others
-            .filter(item => item.code) 
+            .filter(item => item.code)
             .map(item => item.code)
             .join(',');
-		
-		const payload = {
-			sex: personsGender == "Male" ? "1" 
-				: personsGender == "Female" ? "2"
-				: "9",
-			// estimatedAge // Provided in ISO_8601 format https://en.wikipedia.org/wiki/ISO_8601#Durations. 
-			// E.g. P10YD 10 years, P9M 9 months, P5D 5 days, PT10H 10 hours, PT10M 10 minutes
-			estimatedAge: personsAge ? moment.duration({ years: personsAge }).toISOString() : "",
-			causeOfDeathCodeA: underlyingCauses["diseaseTitleA"],
-			causeOfDeathCodeB: underlyingCauses["diseaseTitleB"],
-			causeOfDeathCodeC: underlyingCauses["diseaseTitleC"],
-			causeOfDeathCodeD: underlyingCauses["diseaseTitleD"],
+
+        const payload = {
+            sex: personsGender == "Male" ? "1"
+                : personsGender == "Female" ? "2"
+                    : "9",
+            // estimatedAge // Provided in ISO_8601 format https://en.wikipedia.org/wiki/ISO_8601#Durations.
+            // E.g. P10YD 10 years, P9M 9 months, P5D 5 days, PT10H 10 hours, PT10M 10 minutes
+            estimatedAge: personsAge ? moment.duration({years: personsAge}).toISOString() : "",
+            causeOfDeathCodeA: underlyingCauses["diseaseTitleA"],
+            causeOfDeathCodeB: underlyingCauses["diseaseTitleB"],
+            causeOfDeathCodeC: underlyingCauses["diseaseTitleC"],
+            causeOfDeathCodeD: underlyingCauses["diseaseTitleD"],
             causeOfDeathCodePart2: otherCodes,
             causeOfDeathUriPart2: otherUris,
-			intervalA,
-			intervalB,
-			intervalC,
-			intervalD,
-			dateBirth: dateOfBirth?.toISOString() ?? "",
-			dateDeath: dateOfDeath?.toISOString() ?? "",
-			// maternalDeathWasPregnant 
-			// For women, was the deceased pregnant 0: No, - 1: Yes, - 9: Unknown
-			maternalDeathWasPregnant: wasPregnant == "Yes" ? "1" : wasPregnant == "No" ? "0" : "9",
-			// maternalDeathPregnancyContribute 
-			// Did pregnancy contribute to death 0: No, - 1: Yes, - 9: Unknown
-			maternalDeathPregnancyContribute: pregnacyContribute == "Yes" ? "1" : pregnacyContribute == "No" ? "0" : "9",
-			// timeFromPregnancy
-			// 1: Within 42 days before death - 2: Between 43 days up to 1 year before death - 9:Unknown
-			timeFromPregnancy: pregTime == "Within 42 days before the death" ? "1" : pregTime == "Between 43 days up to 1 year before death" ? "2": "9",
+            intervalA,
+            intervalB,
+            intervalC,
+            intervalD,
+            dateBirth: dateOfBirth?.toISOString() ?? "",
+            dateDeath: dateOfDeath?.toISOString() ?? "",
+            // maternalDeathWasPregnant
+            // For women, was the deceased pregnant 0: No, - 1: Yes, - 9: Unknown
+            maternalDeathWasPregnant: wasPregnant == "Yes" ? "1" : wasPregnant == "No" ? "0" : "9",
+            // maternalDeathPregnancyContribute
+            // Did pregnancy contribute to death 0: No, - 1: Yes, - 9: Unknown
+            maternalDeathPregnancyContribute: pregnacyContribute == "Yes" ? "1" : pregnacyContribute == "No" ? "0" : "9",
+            // timeFromPregnancy
+            // 1: Within 42 days before death - 2: Between 43 days up to 1 year before death - 9:Unknown
+            timeFromPregnancy: pregTime == "Within 42 days before the death" ? "1" : pregTime == "Between 43 days up to 1 year before death" ? "2" : "9",
 
-		};
-		// "https://icd.who.int/doris/api/ucod/underlyingcauseofdeath/ICD11"
+        };
+        // "https://icd.who.int/doris/api/ucod/underlyingcauseofdeath/ICD11"
         const burl = "https://ug.sk-engine.cloud/icd-api";
         // const burl = "https://hmis-dev.health.go.ug";
-		const url = burl + "/icd/release/11/2023-01/doris?" + new URLSearchParams(payload);
-		const res = await fetch(url, {
-			// body: JSON.stringify(payload),
-			method: 'GET',
-			headers: {
-				"Content-Type": "application/json",
-				"API-Version": "v2",
-				"Accept-Language": "en",	
-			}
-		}).then((response) => response.json());
+        const url = burl + "/icd/release/11/2023-01/doris?" + new URLSearchParams(payload);
+        const res = await fetch(url, {
+            // body: JSON.stringify(payload),
+            method: 'GET',
+            headers: {
+                "Content-Type": "application/json",
+                "API-Version": "v2",
+                "Accept-Language": "en",
+            }
+        }).then((response) => response.json());
 
-		const nameres = await fetch(
-			res.uri.replace("http://id.who.int", "https://ug.sk-engine.cloud/icd-api"),
-			{
-				method: 'GET',
-				headers: {
-					"Content-Type": "application/json",
-					"API-Version": "v2",
-					"Accept-Language": "en",	
-				}
-			}).then((response) => response.json());
-		
+        const nameres = await fetch(
+            res.uri.replace("http://id.who.int", "https://ug.sk-engine.cloud/icd-api"),
+            {
+                method: 'GET',
+                headers: {
+                    "Content-Type": "application/json",
+                    "API-Version": "v2",
+                    "Accept-Language": "en",
+                }
+            }).then((response) => response.json());
+
 
         console.log("resd", res);
         form.setFieldsValue({
@@ -1641,7 +1685,6 @@ export const DataEntryForm = observer(() => {
 
         // Force ant design to acknowledge the changed value
     };
-
 
 
     useEffect(() => {
@@ -1760,16 +1803,16 @@ export const DataEntryForm = observer(() => {
 
             if (defaults["lu9BiHPxNqH"]) {
                 setDeclarationsDefault({
-                    u9tYUv6AM51: defaults["u9tYUv6AM51"] ? true : false,
-                    ZXZZfzBpu8a: defaults["ZXZZfzBpu8a"] ? true : false,
-                    cp5xzqVU2Vw: defaults["cp5xzqVU2Vw"] ? true : false,
+                    u9tYUv6AM51: !!defaults["u9tYUv6AM51"],
+                    ZXZZfzBpu8a: !!defaults["ZXZZfzBpu8a"],
+                    cp5xzqVU2Vw: !!defaults["cp5xzqVU2Vw"],
                     lu9BiHPxNqH: `${defaults["lu9BiHPxNqH"]}`,
                 });
             } else {
                 setDeclarationsDefault({
-                    u9tYUv6AM51: defaults["u9tYUv6AM51"] ? true : false,
-                    ZXZZfzBpu8a: defaults["ZXZZfzBpu8a"] ? true : false,
-                    cp5xzqVU2Vw: defaults["cp5xzqVU2Vw"] ? true : false,
+                    u9tYUv6AM51: !!defaults["u9tYUv6AM51"],
+                    ZXZZfzBpu8a: !!defaults["ZXZZfzBpu8a"],
+                    cp5xzqVU2Vw: !!defaults["cp5xzqVU2Vw"],
                     lu9BiHPxNqH: "",
                 });
             }
@@ -2293,7 +2336,7 @@ export const DataEntryForm = observer(() => {
 
                                     rules={[
                                         // Add a custom validator function to check if the field has a value
-                                        ({ getFieldValue }) => ({
+                                        ({getFieldValue}) => ({
                                             validator(_, value) {
                                                 if (!value) {
                                                     // Return a Promise.reject with an error message if the field is empty
@@ -2307,7 +2350,10 @@ export const DataEntryForm = observer(() => {
                                                 return Promise.resolve();
                                             },
                                         }),
-                                        { required: true, message: 'Ministry of Health National Case Number is required' },
+                                        {
+                                            required: true,
+                                            message: 'Ministry of Health National Case Number is required'
+                                        },
                                         // { validator: checkMinistryCaseNumber },
                                         !store.editing && {
                                             validator: async (_, value) => {
@@ -2328,7 +2374,7 @@ export const DataEntryForm = observer(() => {
                                     <Input
                                         size="large"
                                         disabled={
-                                        true
+                                            true
                                             // store.viewMode ||
                                             // store.allDisabled.ZKBE8Xm9DJG
                                         }
@@ -2389,7 +2435,7 @@ export const DataEntryForm = observer(() => {
                                             true
                                         }
                                         // value ={moment().format('YYYY-MM-DD')}
-                                        type = "hidden"
+                                        type="hidden"
                                     />
                                 </Form.Item>
                             </td>
@@ -2406,8 +2452,8 @@ export const DataEntryForm = observer(() => {
                                         disabled={
                                             true
                                         }
-                                        value ={defaultValue}
-                                        type = "hidden"
+                                        value={defaultValue}
+                                        type="hidden"
                                     />
                                 </Form.Item>
                             </td>
@@ -2442,7 +2488,7 @@ export const DataEntryForm = observer(() => {
                                                 },
                                             },
                                         ] : []
-                                }
+                                    }
                                 >
                                     <Input
                                         size="large"
@@ -2530,22 +2576,34 @@ export const DataEntryForm = observer(() => {
                                     name="zwKo51BEayZ"
                                     className="m-0"
                                 >
-                                    <DistSearchPopup
-                                        disabled={
-                                            store.viewMode ||
-                                            store.allDisabled.zwKo51BEayZ
-                                        }
-                                        searchType={validSearchTypes.region}
-                                        // setLimitedArray={limitedRegionParent}
-                                        dictatedContent={chosenRegion}
-                                        // setLimitedArrayParent={setLimitedRegionParent}
-                                        receiveOutput={(text: any) => {
-                                            console.log("Chosen region is ", text);
-                                            setChosenRegionToSubmit(
-                                                `${text}`
-                                            );
-                                        }}
-                                    />
+                                    <Select
+                                        disabled={store.viewMode || store.allDisabled.zwKo51BEayZ}
+                                        placeholder="Select a region"
+                                        onChange={handleRegionChange}
+                                        value={chosenRegion}
+                                    >
+                                        {regions.map((region) => (
+                                            <Select.Option key={region.id} value={region.id}>
+                                                {region.displayName}
+                                            </Select.Option>
+                                        ))}
+                                    </Select>
+                                    {/*<DistSearchPopup*/}
+                                    {/*    disabled={*/}
+                                    {/*        store.viewMode ||*/}
+                                    {/*        store.allDisabled.zwKo51BEayZ*/}
+                                    {/*    }*/}
+                                    {/*    searchType={validSearchTypes.region}*/}
+                                    {/*    // setLimitedArray={limitedRegionParent}*/}
+                                    {/*    dictatedContent={chosenRegion}*/}
+                                    {/*    // setLimitedArrayParent={setLimitedRegionParent}*/}
+                                    {/*    receiveOutput={(text: any) => {*/}
+                                    {/*        console.log("Chosen region is ", text);*/}
+                                    {/*        setChosenRegionToSubmit(*/}
+                                    {/*            `${text}`*/}
+                                    {/*        );*/}
+                                    {/*    }}*/}
+                                    {/*/>*/}
 
                                 </Form.Item>
                             </td>
@@ -2579,25 +2637,39 @@ export const DataEntryForm = observer(() => {
                                     name="u44XP9fZweA"
                                     className="m-0"
                                 >
-                                    <DistSearchPopup
-                                        disabled={
-                                            store.viewMode || store.allDisabled.u44XP9fZweA
-                                        }
-                                        searchType={validSearchTypes.district}
-                                        parentName={chosenRegionToSubmit}
-                                        // setLimitedArray={setLimitedDistrictParent}
-                                        dictatedContent={chosenDistrict}
-                                        // setLimitedArrayParent={setLimitedRegionParent}
-                                        // receiveOutput={(text: any) =>
-                                        //     setChosenDistrictToSubmit(
-                                        //         `${text}`
-                                        //     )
-                                        // }
-                                        receiveOutput={(text: string, id: string) => {
-                                            setChosenDistrictToSubmit(text);
-                                            setChosenDistrictId(id); // Store the district ID
-                                        }}
-                                    />
+                                    <Select
+                                        placeholder="Select a district"
+                                        onChange={handleDistrictChange}
+                                        value={chosenDistrict}
+                                        disabled={store.viewMode || store.allDisabled.u44XP9fZweA || !districts.length}
+                                    >
+                                        {districts.map((district) => (
+                                            <Select.Option key={district.id} value={district.id}>
+                                                {district.displayName}
+                                            </Select.Option>
+                                        ))}
+                                    </Select>
+
+
+                                    {/*<DistSearchPopup*/}
+                                    {/*    disabled={*/}
+                                    {/*        store.viewMode || store.allDisabled.u44XP9fZweA*/}
+                                    {/*    }*/}
+                                    {/*    searchType={validSearchTypes.district}*/}
+                                    {/*    parentName={chosenRegionToSubmit}*/}
+                                    {/*    // setLimitedArray={setLimitedDistrictParent}*/}
+                                    {/*    dictatedContent={chosenDistrict}*/}
+                                    {/*    // setLimitedArrayParent={setLimitedRegionParent}*/}
+                                    {/*    // receiveOutput={(text: any) =>*/}
+                                    {/*    //     setChosenDistrictToSubmit(*/}
+                                    {/*    //         `${text}`*/}
+                                    {/*    //     )*/}
+                                    {/*    // }*/}
+                                    {/*    receiveOutput={(text: string, id: string) => {*/}
+                                    {/*        setChosenDistrictToSubmit(text);*/}
+                                    {/*        setChosenDistrictId(id); // Store the district ID*/}
+                                    {/*    }}*/}
+                                    {/*/>*/}
                                 </Form.Item>
                                 {/* <Form.Item name="bNpMzyShDCX" className="m-0">
                   <Input
@@ -2693,47 +2765,25 @@ export const DataEntryForm = observer(() => {
                             <td className="border p-1">
                                 {!forceResetDOB ? (
                                     <Form.Item
-
                                         name="RbrUuKFSqkZ"
                                         className="m-0"
                                     >
                                         <DatePicker
                                             disabledDate={notTomorrow}
                                             size="large"
-                                            placeholder={
-                                                activeLanguage.lang[
-                                                    "Select a Date"
-                                                    ]
-                                            }
-                                            disabled={
-                                                store.viewMode ||
-                                                store.allDisabled
-                                                    .RbrUuKFSqkZ
-                                            }
+                                            placeholder={activeLanguage.lang["Select a Date"]}
+                                            disabled={store.viewMode || store.allDisabled.RbrUuKFSqkZ}
                                             onChange={(e: any) => {
                                                 if (e?._d) {
-                                                    console.log(
-                                                        "Date of birth has changed",
-                                                        e
-                                                    );
+                                                    console.log("Date of birth has changed", e);
                                                     // const birthDate = new Date(e?._d);
                                                     // const ageInYears = moment().diff(birthDate, "years");
-                                                    const ageInYears = moment().diff(
-                                                        e,
-                                                        "years"
-                                                    );
+                                                    const ageInYears = moment().diff(e, "years");
+                                                    const ageInDays = moment().diff(e, "days");
+
+                                                    setPersonsAgeInDays(ageInDays);
                                                     setAgeKnown(true);
                                                     setPersonsAge(ageInYears);
-                                                    if (
-                                                        ageInYears < 50 &&
-                                                        ageInYears > 10
-                                                    ) {
-                                                        // q7e7FOXKnOf
-                                                        // form.setFieldsValue({
-                                                        //   RbrUuKFSqkZ: ageInYears,
-                                                        // });
-                                                        // store.setFie
-                                                    }
                                                 }
                                             }}
                                         />
@@ -2759,7 +2809,7 @@ export const DataEntryForm = observer(() => {
                                             (option?.children as string)?.toLowerCase().includes(input.toLowerCase())
                                         }
                                     >
-                                        {subCountyOptions.map(({ id, displayName }) => (
+                                        {subCountyOptions.map(({id, displayName}) => (
                                             <Option key={id} value={id}>
                                                 {displayName}
                                             </Option>
@@ -2973,18 +3023,10 @@ export const DataEntryForm = observer(() => {
                                             (e: any) => {
                                                 setPersonsGender(e);
                                                 if (e === "Male") {
-                                                    setShowPregnancyReminder(
-                                                        false
-                                                    );
-                                                    setEnablePregnantQn(
-                                                        false
-                                                    );
+                                                    setShowPregnancyReminder(false);
+                                                    setEnablePregnantQn(false);
                                                     setEnablePregnantQnKey(
-                                                        `${
-                                                            parseInt(
-                                                                enablePregnantQnKey
-                                                            ) + 1
-                                                        }`
+                                                        `${parseInt(enablePregnantQnKey) + 1}`
                                                     );
                                                     return;
                                                 }
@@ -2993,22 +3035,13 @@ export const DataEntryForm = observer(() => {
                                                         "Is female"
                                                     );
                                                     if (
-                                                        personsAge < 50 &&
-                                                        personsAge > 10
+                                                        personsAge < 61 &&
+                                                        personsAge > 12
                                                     ) {
-                                                        setShowPregnancyReminder(
-                                                            true
-                                                        );
-                                                        setEnablePregnantQn(
-                                                            true
-                                                        );
+                                                        setShowPregnancyReminder(true);
+                                                        setEnablePregnantQn(true);
                                                         setEnablePregnantQnKey(
-                                                            `${
-                                                                parseInt(
-                                                                    enablePregnantQnKey
-                                                                ) + 1
-                                                            }`
-                                                        );
+                                                            `${parseInt(enablePregnantQnKey) + 1}`);
                                                         window.alert(
                                                             activeLanguage
                                                                 .lang[
@@ -3411,6 +3444,7 @@ export const DataEntryForm = observer(() => {
                                     className="m-0"
                                 >
                                     <table>
+                                        <tbody>
                                         <tr>
                                             <td>
                                                 <Input
@@ -3483,6 +3517,7 @@ export const DataEntryForm = observer(() => {
                                                 </Popconfirm>
                                             </td>
                                         </tr>
+                                        </tbody>
                                     </table>
                                 </Form.Item>
                             </td>
@@ -3588,6 +3623,7 @@ export const DataEntryForm = observer(() => {
                                     className="m-0"
                                 >
                                     <table>
+                                        <tbody>
                                         <tr>
                                             <td>
                                                 <Input
@@ -3661,6 +3697,7 @@ export const DataEntryForm = observer(() => {
                                                 </Popconfirm>
                                             </td>
                                         </tr>
+                                        </tbody>
                                     </table>
                                 </Form.Item>
                             </td>
@@ -3757,6 +3794,7 @@ export const DataEntryForm = observer(() => {
                                     className="m-0"
                                 >
                                     <table>
+                                        <tbody>
                                         <tr>
                                             <td>
                                                 <Input
@@ -3829,6 +3867,7 @@ export const DataEntryForm = observer(() => {
                                                 </Popconfirm>
                                             </td>
                                         </tr>
+                                        </tbody>
                                     </table>
                                 </Form.Item>
                             </td>
@@ -3924,6 +3963,7 @@ export const DataEntryForm = observer(() => {
                                     className="m-0"
                                 >
                                     <table>
+                                        <tbody>
                                         <tr>
                                             <td>
                                                 <Input
@@ -3996,6 +4036,7 @@ export const DataEntryForm = observer(() => {
                                                 </Popconfirm>
                                             </td>
                                         </tr>
+                                        </tbody>
                                     </table>
                                 </Form.Item>
                             </td>
@@ -4035,7 +4076,6 @@ export const DataEntryForm = observer(() => {
                         </tr>
 
 
-
                         <tr>
                             <td className="border p-1" colSpan={2} rowSpan={5}>
                                 <b>
@@ -4067,7 +4107,7 @@ export const DataEntryForm = observer(() => {
                                         title?: any,
                                         uri?: any
                                     ) => {
-                                        setDorisFields();                                        
+                                        setDorisFields();
                                     }}
                                 />
                             </td>
@@ -4124,7 +4164,7 @@ export const DataEntryForm = observer(() => {
                                         title?: any,
                                         uri?: any
                                     ) => {
-                                        setDorisFields();                                        
+                                        setDorisFields();
                                     }}
                                 />
                             </td>
@@ -4168,7 +4208,7 @@ export const DataEntryForm = observer(() => {
                                         title?: any,
                                         uri?: any
                                     ) => {
-                                        setDorisFields();                                        
+                                        setDorisFields();
                                     }}
                                 />
                             </td>
@@ -4212,7 +4252,7 @@ export const DataEntryForm = observer(() => {
                                         title?: any,
                                         uri?: any
                                     ) => {
-                                        setDorisFields();                                        
+                                        setDorisFields();
                                     }}
                                 />
                             </td>
@@ -4256,7 +4296,7 @@ export const DataEntryForm = observer(() => {
                                         title?: any,
                                         uri?: any
                                     ) => {
-                                        setDorisFields();                                        
+                                        setDorisFields();
                                     }}
                                 />
                             </td>
@@ -4543,6 +4583,7 @@ export const DataEntryForm = observer(() => {
                                     className="m-0"
                                 >
                                     <table>
+                                        <tbody>
                                         <tr>
                                             <td></td>
                                             <td>
@@ -4560,6 +4601,7 @@ export const DataEntryForm = observer(() => {
                                                 />
                                             </td>
                                         </tr>
+                                        </tbody>
                                     </table>
                                 </Form.Item>
                             </td>
@@ -5377,456 +5419,469 @@ export const DataEntryForm = observer(() => {
                         </tbody>
                     </table>
 
-                    <table className="my-2 w-full border-collapse px-2"
-                           style={{...(notifyx ? ({display: "none"}) : ({}))}}>
-                        <tbody>
-                        <tr>
-                            <td
-                                colSpan={4}
-                                className="border p-1 text-lg"
-                                style={{background: titleBackgroundColor}}
-                            >
-                                <h3
-                                    style={{
-                                        fontWeight: "bolder",
-                                        color: "#000085",
-                                    }}
-                                >
-                                    {
-                                        activeLanguage.lang[
-                                            "Fetal or infant death"
-                                            ]
-                                    }
-                                </h3>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td className="border p-1" colSpan={2}>
-                                <b>
-                                    {
-                                        activeLanguage.lang[
-                                            "Multiple pregnancy"
-                                            ]
-                                    }
-                                </b>
-                            </td>
-                            <td className="border p-1" colSpan={2}>
-                                {optionSets ? (
-                                    <Form.Item
-                                        name="V4rE1tsj5Rb"
-                                        className="m-0"
+                    {
+                        (personsAgeInDays <= 7 && personsAge < 1) && (
+                            <table className="my-2 w-full border-collapse px-2"
+                                   style={{...(notifyx ? ({display: "none"}) : ({}))}}>
+                                <tbody>
+                                <tr>
+                                    <td
+                                        colSpan={4}
+                                        className="border p-1 text-lg"
+                                        style={{background: titleBackgroundColor}}
                                     >
-                                        {optionSet("YN01", "V4rE1tsj5Rb", null, personsAge > 1)}
-                                    </Form.Item>
-                                ) : null}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td className="border p-1" colSpan={2}>
-                                <b>{activeLanguage.lang["Stillborn?"]}</b>
-                            </td>
-                            <td className="border p-1" colSpan={2}>
-                                {optionSets ? (
-                                    <Form.Item
-                                        name="ivnHp4M4hFF"
-                                        className="m-0"
-                                    >
-                                        {optionSet(
-                                            "YN01",
-                                            "ivnHp4M4hFF",
-                                            (e: any) => {
-                                                if (e === "Yes") {
-                                                    // Disable the relevant fields
-                                                    setDisableFetal(true);
-                                                    setFetalDisableKey(
-                                                        `${
-                                                            parseInt(
-                                                                fetalDisableKey
-                                                            ) + 1
-                                                        }`
-                                                    );
-                                                } else {
-                                                    setDisableFetal(false);
-                                                    setFetalDisableKey(
-                                                        `${
-                                                            parseInt(
-                                                                fetalDisableKey
-                                                            ) + 1
-                                                        }`
-                                                    );
-                                                }
-                                            },
-                                            personsAge > 1
-                                        )}
-                                    </Form.Item>
-                                ) : null}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td className="border p-1">
-                                <b>
-                                    {
-                                        activeLanguage.lang[
-                                            "If death within 24 hrs specify the number of hours survived"
-                                            ]
-                                    }
-                                </b>
-                            </td>
-                            <td className="border p-1">
-                                <Form.Item
-                                    name="jf9TogeSZpk"
-                                    className="m-0"
+                                        <h3
+                                            style={{
+                                                fontWeight: "bolder",
+                                                color: "#000085",
+                                            }}
+                                        >
+                                            {
+                                                activeLanguage.lang[
+                                                    "Fetal or infant death"
+                                                    ]
+                                            }
+                                        </h3>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td className="border p-1" colSpan={2}>
+                                        <b>
+                                            {
+                                                activeLanguage.lang[
+                                                    "Multiple pregnancy"
+                                                    ]
+                                            }
+                                        </b>
+                                    </td>
+                                    <td className="border p-1" colSpan={2}>
+                                        {optionSets ? (
+                                            <Form.Item
+                                                name="V4rE1tsj5Rb"
+                                                className="m-0"
+                                            >
+                                                {optionSet("YN01", "V4rE1tsj5Rb", null, personsAge > 1)}
+                                            </Form.Item>
+                                        ) : null}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td className="border p-1" colSpan={2}>
+                                        <b>{activeLanguage.lang["Stillborn?"]}</b>
+                                    </td>
+                                    <td className="border p-1" colSpan={2}>
+                                        {optionSets ? (
+                                            <Form.Item
+                                                name="ivnHp4M4hFF"
+                                                className="m-0"
+                                            >
+                                                {optionSet(
+                                                    "YN01",
+                                                    "ivnHp4M4hFF",
+                                                    (e: any) => {
+                                                        if (e === "Yes") {
+                                                            // Disable the relevant fields
+                                                            setDisableFetal(true);
+                                                            setFetalDisableKey(
+                                                                `${
+                                                                    parseInt(
+                                                                        fetalDisableKey
+                                                                    ) + 1
+                                                                }`
+                                                            );
+                                                        } else {
+                                                            setDisableFetal(false);
+                                                            setFetalDisableKey(
+                                                                `${
+                                                                    parseInt(
+                                                                        fetalDisableKey
+                                                                    ) + 1
+                                                                }`
+                                                            );
+                                                        }
+                                                    },
+                                                    personsAge > 1
+                                                )}
+                                            </Form.Item>
+                                        ) : null}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td className="border p-1">
+                                        <b>
+                                            {
+                                                activeLanguage.lang[
+                                                    "If death within 24 hrs specify the number of hours survived"
+                                                    ]
+                                            }
+                                        </b>
+                                    </td>
+                                    <td className="border p-1">
+                                        <Form.Item
+                                            name="jf9TogeSZpk"
+                                            className="m-0"
 
-                                >
+                                        >
 
-                                    <InputNumber
-                                        size="large"
-                                        disabled={false}
-                                        key={fetalDisableKey}
-                                    />
-                                </Form.Item>
-                            </td>
-                            <td className="border p-1">
-                                <b>
-                                    {
-                                        activeLanguage.lang[
-                                            "Birth weight (in grams)"
-                                            ]
-                                    }
-                                </b>
-                            </td>
-                            <td className="border p-1">
-                                <Form.Item
-                                    name="xAWYJtQsg8M"
-                                    className="m-0"
-                                >
-                                    <InputNumber
-                                        size="large"
-                                        disabled={
-                                            store.viewMode ||
-                                            store.allDisabled.xAWYJtQsg8M
-                                        }
-                                    />
-                                </Form.Item>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td className="border p-1">
-                                <b>
-                                    {
-                                        activeLanguage.lang[
-                                            "Number of completed weeks of pregnancy"
-                                            ]
-                                    }
-                                </b>
-                            </td>
-                            <td className="border p-1">
-                                <Form.Item
-                                    name="lQ1Byr04JTx"
-                                    className="m-0"
-                                >
-                                    <InputNumber
-                                        size="large"
-                                        disabled={
-                                            store.viewMode ||
-                                            store.allDisabled.lQ1Byr04JTx
-                                        }
-                                    />
-                                </Form.Item>
-
-                            </td>
-                            <td className="border p-1">
-                                <b>
-                                    {
-                                        activeLanguage.lang[
-                                            "Age of mother (years)"
-                                            ]
-                                    }
-                                </b>
-                            </td>
-                            <td className="border p-1">
-                                <Form.Item
-                                    name="DdfDMFW4EJ9"
-                                    className="m-0"
-                                >
-                                    <InputNumber
-                                        min={1}
-                                        size="large"
-                                        disabled={
-                                            store.viewMode ||
-                                            store.allDisabled.DdfDMFW4EJ9
-                                        }
-                                    />
-                                </Form.Item>
-
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td className="border p-1" colSpan={2}>
-                                <b>
-                                    {
-                                        activeLanguage.lang[
-                                            "If the death was perinatal, please state conditions of mother that affected the fetus and newborn"
-                                            ]
-                                    }
-                                </b>{" "}
-                            </td>
-                            <td className="border p-1" colSpan={2}>
-                                <Form.Item
-                                    name="GFVhltTCG8b"
-                                    className="m-0"
-                                >
-                                    <Input
-                                        size="large"
-                                        disabled={
-                                            store.viewMode ||
-                                            store.allDisabled.GFVhltTCG8b
-                                        }
-                                    />
-                                </Form.Item>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-
-                    <table className="my-2 w-full border-collapse px-2"
-                           style={{...(notifyx ? ({display: "none"}) : ({}))}}>
-                        <tbody>
-                        <tr>
-                            <td
-                                className="border p-1 text-lg"
-                                style={{background: titleBackgroundColor}}
-                            >
-                                <h3
-                                    style={{
-                                        fontWeight: "bolder",
-                                        color: "#000085",
-                                    }}
-                                >
-                                    <b>
-                                        {
-                                            activeLanguage.lang[
-                                                "For women, was the deceased pregnant or within 6 weeks of delivery?"
-                                                ]
-                                        }
-                                    </b>
-                                    {showPregnancyReminder &&
-                                        personsGender === "Female" && (
-                                            <Alert
-                                                message={
-                                                    activeLanguage.lang[
-                                                        "Reminder"
-                                                        ]
-                                                }
-                                                description={
-                                                    activeLanguage.lang[
-                                                        "Please Remember to fill in the section: For women, was the deceased pregnant or within 6 weeks of delivery?"
-                                                        ]
-                                                }
-                                                type="error"
-                                                closable
-                                                showIcon
-                                                onClose={() => {
-                                                    setShowPregnancyReminder(
-                                                        false
-                                                    );
-                                                }}
+                                            <InputNumber
+                                                size="large"
+                                                disabled={false}
+                                                key={fetalDisableKey}
                                             />
-                                        )}
-                                </h3>
-                            </td>
-                            <td className="border p-1">
-                                {optionSets ? (
-                                    <Form.Item
-                                        name="zcn7acUB6x1"
-                                        className="m-0"
-                                    >
-                                        {optionSet(
-                                            "YN01",
-                                            "zcn7acUB6x1",
-                                            (e: any) => {
-                                                console.log("E is ", e);
-                                                if (e === "Yes") {
-                                                    // console.log("Setting pregnancy to true");
-                                                    refreshAllPregnantKeys(
-                                                        true
-                                                    );
-                                                } else {
-                                                    // console.log("Setting pregnancy to false");
-                                                    refreshAllPregnantKeys(
-                                                        false
-                                                    );
+                                        </Form.Item>
+                                    </td>
+                                    <td className="border p-1">
+                                        <b>
+                                            {
+                                                activeLanguage.lang[
+                                                    "Birth weight (in grams)"
+                                                    ]
+                                            }
+                                        </b>
+                                    </td>
+                                    <td className="border p-1">
+                                        <Form.Item
+                                            name="xAWYJtQsg8M"
+                                            className="m-0"
+                                        >
+                                            <InputNumber
+                                                size="large"
+                                                disabled={
+                                                    store.viewMode ||
+                                                    store.allDisabled.xAWYJtQsg8M
                                                 }
-                                            },
-                                            !enablePregnantQn,
-                                            enablePregnantQnKey
-                                        )}
-                                    </Form.Item>
-                                ) : null}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td className="border p-1">
-                                <b>
-                                    {activeLanguage.lang["At what point?"]}
-                                </b>
-                            </td>
-                            <td className="border p-1">
-                                {optionSets ? (
-                                    <Form.Item
-                                        name="KpfvNQSsWIw"
-                                        className="m-0"
-                                    >
-                                        {optionSet(
-                                            "100ATPOINT",
-                                            "KpfvNQSsWIw",
-                                            () => {
-                                            },
-                                            store.viewMode,
-                                            pregnantKey1
-                                        )}
-                                    </Form.Item>
-                                ) : null}
-                            </td>
-                        </tr>
+                                            />
+                                        </Form.Item>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td className="border p-1">
+                                        <b>
+                                            {
+                                                activeLanguage.lang[
+                                                    "Number of completed weeks of pregnancy"
+                                                    ]
+                                            }
+                                        </b>
+                                    </td>
+                                    <td className="border p-1">
+                                        <Form.Item
+                                            name="lQ1Byr04JTx"
+                                            className="m-0"
+                                        >
+                                            <InputNumber
+                                                size="large"
+                                                disabled={
+                                                    store.viewMode ||
+                                                    store.allDisabled.lQ1Byr04JTx
+                                                }
+                                            />
+                                        </Form.Item>
 
-                        <tr>
-                            <td className="border p-1">
-                                <b>
-                                    {
-                                        activeLanguage.lang[
-                                            "Did the pregnancy contribute to death?"
-                                            ]
-                                    }
-                                </b>
-                            </td>
-                            <td className="border p-1">
-                                {optionSets ? (
-                                    <Form.Item
-                                        name="AJAraEcfH63"
-                                        className="m-0"
-                                    >
-                                        {optionSet(
-                                            "YN01",
-                                            "AJAraEcfH63",
-                                            () => {
-                                            },
-                                            store.viewMode,
-                                            pregnantKey2
-                                        )}
-                                    </Form.Item>
-                                ) : null}
-                            </td>
-                        </tr>
+                                    </td>
+                                    <td className="border p-1">
+                                        <b>
+                                            {
+                                                activeLanguage.lang[
+                                                    "Age of mother (years)"
+                                                    ]
+                                            }
+                                        </b>
+                                    </td>
+                                    <td className="border p-1">
+                                        <Form.Item
+                                            name="DdfDMFW4EJ9"
+                                            className="m-0"
+                                        >
+                                            <InputNumber
+                                                min={1}
+                                                size="large"
+                                                disabled={
+                                                    store.viewMode ||
+                                                    store.allDisabled.DdfDMFW4EJ9
+                                                }
+                                            />
+                                        </Form.Item>
 
-                        <tr>
-                            <td className="border p-1">
-                                <b>{activeLanguage.lang["Parity"]}</b>
-                            </td>
-                            <td className="border p-1">
-                                <Form.Item
-                                    name="ymyLrfEcYkD"
-                                    className="m-0"
-                                >
-                                    <Input
-                                        size="large"
-                                        disabled={
-                                            store.viewMode ||
-                                            store.allDisabled.ymyLrfEcYkD
-                                        }
-                                        key={pregnantKey4}
-                                    />
-                                </Form.Item>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td className="border p-1">
-                                <b>
-                                    {
-                                        activeLanguage.lang[
-                                            "Mode of delivery"
-                                            ]
-                                    }
-                                </b>
-                            </td>
-                            <td className="border p-1">
-                                {optionSets ? (
-                                    <Form.Item
-                                        name="K5BDPJQk1BP"
-                                        className="m-0"
-                                    >
-                                        {optionSet(
-                                            "MD01",
-                                            "K5BDPJQk1BP",
-                                            () => {
-                                            },
-                                            store.viewMode,
-                                            pregnantKey5
-                                        )}
-                                    </Form.Item>
-                                ) : null}
-                            </td>
-                        </tr>
+                                    </td>
+                                </tr>
 
-                        <tr>
-                            <td className="border p-1">
-                                <b>
-                                    {
-                                        activeLanguage.lang[
-                                            "Place of delivery"
-                                            ]
-                                    }
-                                </b>
-                            </td>
-                            <td className="border p-1">
-                                {optionSets ? (
-                                    <Form.Item
-                                        name="Z41di0TRjIu"
-                                        className="m-0"
+                                <tr>
+                                    <td className="border p-1" colSpan={2}>
+                                        <b>
+                                            {
+                                                activeLanguage.lang[
+                                                    "If the death was perinatal, please state conditions of mother that affected the fetus and newborn"
+                                                    ]
+                                            }
+                                        </b>{" "}
+                                    </td>
+                                    <td className="border p-1" colSpan={2}>
+                                        <Form.Item
+                                            name="GFVhltTCG8b"
+                                            className="m-0"
+                                        >
+                                            <Input
+                                                size="large"
+                                                disabled={
+                                                    store.viewMode ||
+                                                    store.allDisabled.GFVhltTCG8b
+                                                }
+                                            />
+                                        </Form.Item>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        )
+                    }
+
+
+                    {
+
+                        (personsGender === "Female") && personsAge >= 12 &&
+                        personsAge <= 60 && (
+                            <table className="my-2 w-full border-collapse px-2"
+                                   style={{...(notifyx ? ({display: "none"}) : ({}))}}>
+                                <tbody>
+                                <tr>
+                                    <td
+                                        className="border p-1 text-lg"
+                                        style={{background: titleBackgroundColor}}
                                     >
-                                        {optionSet(
-                                            "PD01",
-                                            "Z41di0TRjIu",
-                                            () => {
-                                            },
-                                            store.viewMode,
-                                            pregnantKey6
-                                        )}
-                                    </Form.Item>
-                                ) : null}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td className="border p-1">
-                                <b>
-                                    {
-                                        activeLanguage.lang[
-                                            "Delivered by skilled attendant"
-                                            ]
-                                    }
-                                </b>
-                            </td>
-                            <td className="border p-1">
-                                {optionSets ? (
-                                    <Form.Item
-                                        name="uaxjt0inPNF"
-                                        className="m-0"
-                                    >
-                                        {optionSet(
-                                            "YN01",
-                                            "uaxjt0inPNF",
-                                            () => {
-                                            },
-                                            store.viewMode,
-                                            pregnantKey7
-                                        )}
-                                    </Form.Item>
-                                ) : null}
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
+                                        <h3
+                                            style={{
+                                                fontWeight: "bolder",
+                                                color: "#000085",
+                                            }}
+                                        >
+                                            <b>
+                                                {
+                                                    activeLanguage.lang[
+                                                        "For women, was the deceased pregnant or within 6 weeks of delivery?"
+                                                        ]
+                                                }
+                                            </b>
+                                            {showPregnancyReminder &&
+                                                personsGender === "Female" && (
+                                                    <Alert
+                                                        message={
+                                                            activeLanguage.lang[
+                                                                "Reminder"
+                                                                ]
+                                                        }
+                                                        description={
+                                                            activeLanguage.lang[
+                                                                "Please Remember to fill in the section: For women, was the deceased pregnant or within 6 weeks of delivery?"
+                                                                ]
+                                                        }
+                                                        type="error"
+                                                        closable
+                                                        showIcon
+                                                        onClose={() => {
+                                                            setShowPregnancyReminder(
+                                                                false
+                                                            );
+                                                        }}
+                                                    />
+                                                )}
+                                        </h3>
+                                    </td>
+                                    <td className="border p-1">
+                                        {optionSets ? (
+                                            <Form.Item
+                                                name="zcn7acUB6x1"
+                                                className="m-0"
+                                            >
+                                                {optionSet(
+                                                    "YN01",
+                                                    "zcn7acUB6x1",
+                                                    (e: any) => {
+                                                        console.log("E is ", e);
+                                                        if (e === "Yes") {
+                                                            // console.log("Setting pregnancy to true");
+                                                            refreshAllPregnantKeys(
+                                                                true
+                                                            );
+                                                        } else {
+                                                            // console.log("Setting pregnancy to false");
+                                                            refreshAllPregnantKeys(
+                                                                false
+                                                            );
+                                                        }
+                                                    },
+                                                    !enablePregnantQn,
+                                                    enablePregnantQnKey
+                                                )}
+                                            </Form.Item>
+                                        ) : null}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td className="border p-1">
+                                        <b>
+                                            {activeLanguage.lang["At what point?"]}
+                                        </b>
+                                    </td>
+                                    <td className="border p-1">
+                                        {optionSets ? (
+                                            <Form.Item
+                                                name="KpfvNQSsWIw"
+                                                className="m-0"
+                                            >
+                                                {optionSet(
+                                                    "100ATPOINT",
+                                                    "KpfvNQSsWIw",
+                                                    () => {
+                                                    },
+                                                    store.viewMode,
+                                                    pregnantKey1
+                                                )}
+                                            </Form.Item>
+                                        ) : null}
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td className="border p-1">
+                                        <b>
+                                            {
+                                                activeLanguage.lang[
+                                                    "Did the pregnancy contribute to death?"
+                                                    ]
+                                            }
+                                        </b>
+                                    </td>
+                                    <td className="border p-1">
+                                        {optionSets ? (
+                                            <Form.Item
+                                                name="AJAraEcfH63"
+                                                className="m-0"
+                                            >
+                                                {optionSet(
+                                                    "YN01",
+                                                    "AJAraEcfH63",
+                                                    () => {
+                                                    },
+                                                    store.viewMode,
+                                                    pregnantKey2
+                                                )}
+                                            </Form.Item>
+                                        ) : null}
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td className="border p-1">
+                                        <b>{activeLanguage.lang["Parity"]}</b>
+                                    </td>
+                                    <td className="border p-1">
+                                        <Form.Item
+                                            name="ymyLrfEcYkD"
+                                            className="m-0"
+                                        >
+                                            <Input
+                                                size="large"
+                                                disabled={
+                                                    store.viewMode ||
+                                                    store.allDisabled.ymyLrfEcYkD
+                                                }
+                                                key={pregnantKey4}
+                                            />
+                                        </Form.Item>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td className="border p-1">
+                                        <b>
+                                            {
+                                                activeLanguage.lang[
+                                                    "Mode of delivery"
+                                                    ]
+                                            }
+                                        </b>
+                                    </td>
+                                    <td className="border p-1">
+                                        {optionSets ? (
+                                            <Form.Item
+                                                name="K5BDPJQk1BP"
+                                                className="m-0"
+                                            >
+                                                {optionSet(
+                                                    "MD01",
+                                                    "K5BDPJQk1BP",
+                                                    () => {
+                                                    },
+                                                    store.viewMode,
+                                                    pregnantKey5
+                                                )}
+                                            </Form.Item>
+                                        ) : null}
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td className="border p-1">
+                                        <b>
+                                            {
+                                                activeLanguage.lang[
+                                                    "Place of delivery"
+                                                    ]
+                                            }
+                                        </b>
+                                    </td>
+                                    <td className="border p-1">
+                                        {optionSets ? (
+                                            <Form.Item
+                                                name="Z41di0TRjIu"
+                                                className="m-0"
+                                            >
+                                                {optionSet(
+                                                    "PD01",
+                                                    "Z41di0TRjIu",
+                                                    () => {
+                                                    },
+                                                    store.viewMode,
+                                                    pregnantKey6
+                                                )}
+                                            </Form.Item>
+                                        ) : null}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td className="border p-1">
+                                        <b>
+                                            {
+                                                activeLanguage.lang[
+                                                    "Delivered by skilled attendant"
+                                                    ]
+                                            }
+                                        </b>
+                                    </td>
+                                    <td className="border p-1">
+                                        {optionSets ? (
+                                            <Form.Item
+                                                name="uaxjt0inPNF"
+                                                className="m-0"
+                                            >
+                                                {optionSet(
+                                                    "YN01",
+                                                    "uaxjt0inPNF",
+                                                    () => {
+                                                    },
+                                                    store.viewMode,
+                                                    pregnantKey7
+                                                )}
+                                            </Form.Item>
+                                        ) : null}
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        )
+                    }
+
+
                     <table className="my-2 w-full border-collapse px-2">
                         <tbody>
                         <tr>
