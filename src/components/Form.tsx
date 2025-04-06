@@ -2512,9 +2512,10 @@ export const DataEntryForm = observer(() => {
                             </td>
                             <td className="border p-1">
                                 <Form.Item
-
                                     name="ZYKmQ9GPOaF"
                                     className="m-0"
+                                    rules={[{required: true, message: 'Full name is required'},
+                                    ]}
                                 >
                                     <Input
                                         size="large"
@@ -2767,6 +2768,8 @@ export const DataEntryForm = observer(() => {
                                     <Form.Item
                                         name="RbrUuKFSqkZ"
                                         className="m-0"
+                                        rules={[{required: true, message: 'Date of birth is required'},
+                                        ]}
                                     >
                                         <DatePicker
                                             disabledDate={notTomorrow}
@@ -2847,6 +2850,8 @@ export const DataEntryForm = observer(() => {
                                     name="q7e7FOXKnOf"
                                     className="m-0"
                                     label="Years"
+                                    rules={[{required: true, message: 'Age is required'},
+                                    ]}
                                 >
                                     <InputNumber
                                         size="large"
@@ -3013,9 +3018,10 @@ export const DataEntryForm = observer(() => {
                             <td className="border p-1">
                                 {optionSets ? (
                                     <Form.Item
-
                                         name="e96GB4CXyd3"
                                         className="m-0"
+                                        rules={[{required: true, message: 'Sex is required'},
+                                        ]}
                                     >
                                         {optionSet(
                                             "SX01",
@@ -3067,6 +3073,8 @@ export const DataEntryForm = observer(() => {
                                 <Form.Item
                                     name="xNCSFrgdUgi"
                                     className="m-0"
+                                    rules={[{required: true, message: 'Place of death is required'},
+                                    ]}
                                 >
                                     <Input
                                         size="large"
