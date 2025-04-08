@@ -2384,10 +2384,10 @@ export const DataEntryForm = observer(() => {
 
                             <td className="border p-1">
                                 <b>
-                                    Inpatient Number
-                                </b>
-                            </td>
-                            <td className="border p-1">
+                                    Inpatient Number <span style={{color: 'red'}}>*</span>
+                            </b>
+                        </td>
+                        <td className="border p-1">
                                 <Form.Item
 
                                     name="FGagV1Utrdh"
@@ -2508,9 +2508,10 @@ export const DataEntryForm = observer(() => {
                                             "Name (Full name):"
                                             ]
                                     }
-                                </b>
-                            </td>
-                            <td className="border p-1">
+                                    <span style={{color: 'red'}}>*</span>
+                            </b>
+                        </td>
+                        <td className="border p-1">
                                 <Form.Item
                                     name="ZYKmQ9GPOaF"
                                     className="m-0"
@@ -2760,10 +2761,10 @@ export const DataEntryForm = observer(() => {
 
                             <td className="border p-1">
                                 <b>
-                                    {activeLanguage.lang["Date of Birth"]}
-                                </b>
-                            </td>
-                            <td className="border p-1">
+                                    {activeLanguage.lang["Date of Birth"]} <span style={{color: 'red'}}>*</span>
+                            </b>
+                        </td>
+                        <td className="border p-1">
                                 {!forceResetDOB ? (
                                     <Form.Item
                                         name="RbrUuKFSqkZ"
@@ -2842,9 +2843,9 @@ export const DataEntryForm = observer(() => {
 
 
                             <td className="border p-1">
-                                <b>{activeLanguage.lang["Age"]}</b>
-                            </td>
-                            <td className="border p-1 d-flex">
+                                <b>{activeLanguage.lang["Age"]} <span style={{color: 'red'}}>*</span></b>
+                        </td>
+                        <td className="border p-1 d-flex">
                                 <Form.Item
 
                                     name="q7e7FOXKnOf"
@@ -3013,9 +3014,9 @@ export const DataEntryForm = observer(() => {
 
 
                             <td className="border p-1">
-                                <b>{activeLanguage.lang["Sex"]}</b>
-                            </td>
-                            <td className="border p-1">
+                                <b>{activeLanguage.lang["Sex"]} <span style={{color: 'red'}}>*</span></b>
+                        </td>
+                        <td className="border p-1">
                                 {optionSets ? (
                                     <Form.Item
                                         name="e96GB4CXyd3"
@@ -3065,11 +3066,11 @@ export const DataEntryForm = observer(() => {
                         <tr>
                             <td className="border p-1">
                                 <b>
-                                    Place of Death
-                                    {/*{activeLanguage.lang["Place of Birth"]}*/}
-                                </b>
-                            </td>
-                            <td className="border p-1">
+                                    Place of Death <span style={{color: 'red'}}>*</span>
+                                {/*{activeLanguage.lang["Place of Birth"]}*/}
+                            </b>
+                        </td>
+                        <td className="border p-1">
                                 <Form.Item
                                     name="xNCSFrgdUgi"
                                     className="m-0"
@@ -3091,10 +3092,10 @@ export const DataEntryForm = observer(() => {
                                         activeLanguage.lang[
                                             "Date and time of death"
                                             ]
-                                    }
-                                </b>
-                            </td>
-                            <td className="border p-1">
+                                    } <span style={{color: 'red'}}>*</span>
+                            </b>
+                        </td>
+                        <td className="border p-1">
                                 <Form.Item
                                     name="i8rrl8YWxLF"
                                     className="m-0"
