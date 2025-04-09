@@ -2691,6 +2691,9 @@ export const DataEntryForm = observer(() => {
                                 </b>
                             </td>
                             <td className="border p-1">
+                                <Form.Item
+                                    name="roxn33dtLLx"
+                                    className="m-0">
                                 <Checkbox
                                     disabled={
                                         store.viewMode ||
@@ -2736,7 +2739,7 @@ export const DataEntryForm = observer(() => {
                                     {activeLanguage.lang["No"]}
                                 </Checkbox>
 
-
+                                </Form.Item>
                             </td>
                         </tr>
                         <tr>
