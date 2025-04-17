@@ -317,34 +317,35 @@ export const DataEntryForm = observer(() => {
         }
     }, [chosenDistrictId]);
 
-    const fetchSubCounties = async () => {
-
-        try {
-            const response = await fetch(
-                // `/api/organisationUnits/${chosenDistrictId}?paging=false&fields=level,id,children[id,displayName,level]`
-                `https://hmis-dev.health.go.ug/api/organisationUnits/${chosenDistrictId}?paging=false&fields=level,id,children[id,displayName,level]`
-            );
-            const data = await response.json();
-            console.log("sub data", data);
-
-            if (data?.children?.length) {
-                // Extract sub-counties (level 4) from the response
-                const matchingSubCounties = data.children
-                    .filter((child: any) => child.level === 4) // Ensure they are sub-counties
-                    .map((child: any) => ({
-                        id: child.id,
-                        displayName: child.displayName,
-                    }));
-
-                console.log("Matching Sub-Counties:", matchingSubCounties);
-                setSubCountyOptions(matchingSubCounties);
-            } else {
-                setSubCountyOptions([]); // Clear options if no children found
-            }
-        } catch (error) {
-            console.error("Error fetching sub-counties:", error);
-        }
-    };
+    // const fetchSubCounties = async () => {
+    //
+    //     try {
+    //         const response = await fetch(
+    //             `/api/organisationUnits/${chosenDistrictId}?paging=false&fields=level,id,children[id,displayName,level]`
+    //             // `https://hmis-dev.health.go.ug/api/organisationUnits/${chosenDistrictId}?paging=false&fields=level,id,children[id,displayName,level]`
+    //             // `https://hmis.health.go.ug/api/organisationUnits/${chosenDistrictId}?paging=false&fields=level,id,children[id,displayName,level]`
+    //         );
+    //         const data = await response.json();
+    //         console.log("sub data", data);
+    //
+    //         if (data?.children?.length) {
+    //             // Extract sub-counties (level 4) from the response
+    //             const matchingSubCounties = data.children
+    //                 .filter((child: any) => child.level === 4) // Ensure they are sub-counties
+    //                 .map((child: any) => ({
+    //                     id: child.id,
+    //                     displayName: child.displayName,
+    //                 }));
+    //
+    //             console.log("Matching Sub-Counties:", matchingSubCounties);
+    //             setSubCountyOptions(matchingSubCounties);
+    //         } else {
+    //             setSubCountyOptions([]); // Clear options if no children found
+    //         }
+    //     } catch (error) {
+    //         console.error("Error fetching sub-counties:", error);
+    //     }
+    // };
 
     // const fetchSubCounties = async () => {
     //
@@ -378,6 +379,33 @@ export const DataEntryForm = observer(() => {
     //         console.error("Error fetching sub-counties:", error);
     //     }
     // };
+
+    const fetchSubCounties = async () => {
+        try {
+            const response = await fetch(
+                // `/api/organisationUnits/${chosenDistrictId}?paging=false&fields=level,id,children[id,displayName,level,children[id,displayName,level]]`
+                `https://hmis.health.go.ug/api/organisationUnits/${chosenDistrictId}?paging=false&fields=level,id,children[id,displayName,level,children[id,displayName,level]]`
+            );
+            const data = await response.json();
+            // console.log("sub data", data);
+
+            // Extract sub-counties (level 5) from the nested children
+            const level4Units = data?.children ?? [];
+
+            const level5SubCounties = level4Units.flatMap((level4) =>
+                (level4.children ?? []).filter(child => child.level === 5)
+            );
+
+            const formattedSubCounties = level5SubCounties.map((subcounty) => ({
+                id: subcounty.id,
+                displayName: subcounty.displayName,
+            }));
+
+            setSubCountyOptions(formattedSubCounties);
+        } catch (error) {
+            console.error("Error fetching sub-counties:", error);
+        }
+    };
 
     const onFinish = async (values: any) => {
         // if (!store.selectedNationality) {
