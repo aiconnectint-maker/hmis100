@@ -3135,7 +3135,7 @@ export const DataEntryForm = observer(() => {
                                 >
                                     <DatePicker
                                         defaultValue={actualTimeOfDeath}
-                                        disabledDate={notTomorrow}
+                                        // disabledDate={notTomorrow}
                                         size="large"
                                         showTime
                                         format="YYYY-MM-DD HH:mm:ss"
