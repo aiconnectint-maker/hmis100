@@ -1614,7 +1614,7 @@ export const DataEntryForm = observer(() => {
         // "https://icd.who.int/doris/api/ucod/underlyingcauseofdeath/ICD11"
         const burl = "https://ug.sk-engine.cloud/icd-api";
         // const burl = "https://hmis-dev.health.go.ug";
-        const url = burl + "/icd/release/11/2023-01/doris?" + new URLSearchParams(payload);
+        const url = burl + "/icd/release/11/2024-01/doris?" + new URLSearchParams(payload);
         const res = await fetch(url, {
             // body: JSON.stringify(payload),
             method: 'GET',
