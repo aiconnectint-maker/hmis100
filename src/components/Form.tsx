@@ -2413,9 +2413,9 @@ export const DataEntryForm = observer(() => {
                             <td className="border p-1">
                                 <b>
                                     Inpatient Number <span style={{color: 'red'}}>*</span>
-                            </b>
-                        </td>
-                        <td className="border p-1">
+                                </b>
+                            </td>
+                            <td className="border p-1">
                                 <Form.Item
 
                                     name="FGagV1Utrdh"
@@ -2537,9 +2537,9 @@ export const DataEntryForm = observer(() => {
                                             ]
                                     }
                                     <span style={{color: 'red'}}>*</span>
-                            </b>
-                        </td>
-                        <td className="border p-1">
+                                </b>
+                            </td>
+                            <td className="border p-1">
                                 <Form.Item
                                     name="ZYKmQ9GPOaF"
                                     className="m-0"
@@ -2722,50 +2722,50 @@ export const DataEntryForm = observer(() => {
                                 <Form.Item
                                     name="roxn33dtLLx"
                                     className="m-0">
-                                <Checkbox
-                                    disabled={
-                                        store.viewMode ||
-                                        store.allDisabled.roxn33dtLLx
-                                    }
-                                    checked={ageKnown}
-                                    // onClick={() => form.setFieldsValue({ roxn33dtLLx: "Yes" })}
-                                    onChange={(val: any) => {
-                                        console.log(
-                                            "VAL IS ",
-                                            val?.target?.checked
-                                        );
-                                        setAgeKnown(val?.target?.checked);
-                                        form.setFieldsValue({
-                                            roxn33dtLLx: "Yes",
-                                        });
-                                        store.disableValue("q7e7FOXKnOf");
-                                    }}
-                                >
-                                    {activeLanguage.lang["Yes"]}
-                                </Checkbox>
+                                    <Checkbox
+                                        disabled={
+                                            store.viewMode ||
+                                            store.allDisabled.roxn33dtLLx
+                                        }
+                                        checked={ageKnown}
+                                        // onClick={() => form.setFieldsValue({ roxn33dtLLx: "Yes" })}
+                                        onChange={(val: any) => {
+                                            console.log(
+                                                "VAL IS ",
+                                                val?.target?.checked
+                                            );
+                                            setAgeKnown(val?.target?.checked);
+                                            form.setFieldsValue({
+                                                roxn33dtLLx: "Yes",
+                                            });
+                                            store.disableValue("q7e7FOXKnOf");
+                                        }}
+                                    >
+                                        {activeLanguage.lang["Yes"]}
+                                    </Checkbox>
 
-                                <Checkbox
-                                    // onChange={(val: any) => console.log("VAL IS ", val?.target)}
-                                    disabled={
-                                        store.viewMode ||
-                                        store.allDisabled.roxn33dtLLx
-                                    }
-                                    checked={!ageKnown}
-                                    onChange={(val: any) => {
-                                        console.log(
-                                            "VAL IS ",
-                                            val?.target?.checked
-                                        );
-                                        setAgeKnown(!val?.target?.checked);
-                                        form.setFieldsValue({
-                                            roxn33dtLLx: "No",
-                                        });
+                                    <Checkbox
+                                        // onChange={(val: any) => console.log("VAL IS ", val?.target)}
+                                        disabled={
+                                            store.viewMode ||
+                                            store.allDisabled.roxn33dtLLx
+                                        }
+                                        checked={!ageKnown}
+                                        onChange={(val: any) => {
+                                            console.log(
+                                                "VAL IS ",
+                                                val?.target?.checked
+                                            );
+                                            setAgeKnown(!val?.target?.checked);
+                                            form.setFieldsValue({
+                                                roxn33dtLLx: "No",
+                                            });
 
-                                        store.enableValue("q7e7FOXKnOf");
-                                    }}
-                                >
-                                    {activeLanguage.lang["No"]}
-                                </Checkbox>
+                                            store.enableValue("q7e7FOXKnOf");
+                                        }}
+                                    >
+                                        {activeLanguage.lang["No"]}
+                                    </Checkbox>
 
                                 </Form.Item>
                             </td>
@@ -2793,9 +2793,9 @@ export const DataEntryForm = observer(() => {
                             <td className="border p-1">
                                 <b>
                                     {activeLanguage.lang["Date of Birth"]} <span style={{color: 'red'}}>*</span>
-                            </b>
-                        </td>
-                        <td className="border p-1">
+                                </b>
+                            </td>
+                            <td className="border p-1">
                                 {!forceResetDOB ? (
                                     <Form.Item
                                         name="RbrUuKFSqkZ"
@@ -2875,8 +2875,8 @@ export const DataEntryForm = observer(() => {
 
                             <td className="border p-1">
                                 <b>{activeLanguage.lang["Age"]} <span style={{color: 'red'}}>*</span></b>
-                        </td>
-                        <td className="border p-1 d-flex">
+                            </td>
+                            <td className="border p-1 d-flex">
                                 <Form.Item
 
                                     name="q7e7FOXKnOf"
@@ -3046,8 +3046,8 @@ export const DataEntryForm = observer(() => {
 
                             <td className="border p-1">
                                 <b>{activeLanguage.lang["Sex"]} <span style={{color: 'red'}}>*</span></b>
-                        </td>
-                        <td className="border p-1">
+                            </td>
+                            <td className="border p-1">
                                 {optionSets ? (
                                     <Form.Item
                                         name="e96GB4CXyd3"
@@ -3098,10 +3098,10 @@ export const DataEntryForm = observer(() => {
                             <td className="border p-1">
                                 <b>
                                     Place of Death <span style={{color: 'red'}}>*</span>
-                                {/*{activeLanguage.lang["Place of Birth"]}*/}
-                            </b>
-                        </td>
-                        <td className="border p-1">
+                                    {/*{activeLanguage.lang["Place of Birth"]}*/}
+                                </b>
+                            </td>
+                            <td className="border p-1">
                                 <Form.Item
                                     name="xNCSFrgdUgi"
                                     className="m-0"
@@ -3124,9 +3124,9 @@ export const DataEntryForm = observer(() => {
                                             "Date and time of death"
                                             ]
                                     } <span style={{color: 'red'}}>*</span>
-                            </b>
-                        </td>
-                        <td className="border p-1">
+                                </b>
+                            </td>
+                            <td className="border p-1">
                                 <Form.Item
                                     name="i8rrl8YWxLF"
                                     className="m-0"
@@ -3293,6 +3293,62 @@ export const DataEntryForm = observer(() => {
                                 );
                             }
                         )}
+                        <tr>
+                            <td className="border p-1">
+                                <b>
+                                    Place of death out of facility Description:
+                                </b>
+                            </td>
+                            <td className="border p-1">
+                                <Form.Item
+                                    name="NPE6arvf4mF"
+                                    className="m-0"
+                                >
+                                    <Input
+                                        size="large"
+                                        disabled={
+                                            store.viewMode ||
+                                            store.allDisabled.NPE6arvf4mF
+                                        }
+                                    />
+                                </Form.Item>
+                            </td>
+
+                            <td className="border p-1">
+                                <b>
+                                    Place of death out of facility:
+                                </b>
+                            </td>
+                            <td className="border p-1">
+                                {optionSets ? (
+
+                                    <Form.Item
+                                        name="sA334hwknqq"
+                                        className="m-0"
+                                    >
+                                        {optionSet("HMIS_100 Place of death out of facility", "FAsTh8L7Yrw")}
+                                    </Form.Item>
+                                ) : null}
+                            </td>
+
+
+                            {/*<td className="border p-1">*/}
+
+                            {/*    <Form.Item*/}
+                            {/*        name="FAsTh8L7Yrw"*/}
+                            {/*        className="m-0"*/}
+                            {/*    >*/}
+                            {/*        <select className="border p-1 w-full">*/}
+                            {/*            <option value="">Select an option</option>*/}
+                            {/*            <option value="Community">Community</option>*/}
+                            {/*            <option value="Transit">Transit</option>*/}
+                            {/*            <option value="Other Facility">Other Facility</option>*/}
+                            {/*        </select>*/}
+
+                            {/*    </Form.Item>*/}
+
+                            {/*</td>*/}
+                        </tr>
                         </tbody>
                     </table>
 

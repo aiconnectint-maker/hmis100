@@ -213,7 +213,7 @@ const initQuery = {
 			fields: "id,code,options[code,name]",
 			paging: "false",
 			filter:
-				"code:in:[SX01,YN01,MD01,PD01,TI01,100U,100ATPOINT,100RefLevels,Age_Type]",
+				"code:in:[SX01,YN01,MD01,PD01,TI01,100U,100ATPOINT,100RefLevels,Age_Type,HMIS_100 Place of death out of facility]",
 		},
 	},
 };
@@ -322,6 +322,9 @@ class Store {
 		b70okb06FWa: false,
 		t5nTEmlScSt: false,
 		dsiwvNQLe5n: false,
+		NPE6arvf4mF: false,
+		sA334hwknqq: false,
+		FAsTh8L7Yrw: false,
 		RbrUuKFSqkZ: false,
 		q7e7FOXKnOf: false,
 		e96GB4CXyd3: false,
@@ -1942,9 +1945,9 @@ class Store {
 						...(allorgs
 							? {}
 							: {
-									orgUnit: this.selectedOrgUnit,
-									ouMode: "DESCENDANTS",
-							  }),
+								orgUnit: this.selectedOrgUnit,
+								ouMode: "DESCENDANTS",
+							}),
 						totalPages: "true",
 						attributeCc: this.attributeCC,
 						attributeCos: this.selectedNationality,
@@ -2050,7 +2053,7 @@ class Store {
 	};
 
 	@action addEvent = async (form: any) => {
-		 let { eventDate, ...rest } = form;
+		let { eventDate, ...rest } = form;
 		// let eventDate;
 		// const { ...rest } = form;
 
