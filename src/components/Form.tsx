@@ -814,6 +814,8 @@ export const DataEntryForm = observer(() => {
                 setAgeKnown(true);
             } else {
                 setAgeKnown(false);
+                // Clear the DOB field when disabled
+                form.setFieldsValue({ RbrUuKFSqkZ: null });
             }
         }
 
@@ -1254,6 +1256,23 @@ export const DataEntryForm = observer(() => {
             .then((data: any) => {
                 const info = data.data;
                 console.log("NIN info", data);
+
+                // Disable all form fields except residence details
+                const allFormFields = form.getFieldsValue();
+                const residenceFields = ['zwKo51BEayZ', 'u44XP9fZweA', 't5nTEmlScSt']; // region, district, village IDs
+
+                Object.keys(allFormFields).forEach(fieldName => {
+                    if (!residenceFields.includes(fieldName)) {
+                        store.disableValue(fieldName);
+                    }
+                });
+
+
+                // Keep residence fields enabled
+                residenceFields.forEach(field => {
+                    store.enableValue(field);
+                });
+
                 if (!isEmpty(info) && !info.error) {
                     // full name
                     form.setFieldsValue({ZYKmQ9GPOaF: `${info?.givenNames} ${info?.surname}`});
@@ -2348,6 +2367,28 @@ export const DataEntryForm = observer(() => {
                     <table className="my-2 w-full border-collapse">
                         <tbody>
                         <tr>
+                            <td className="border p-1" colSpan={2}>
+                                <b>
+                                    Date of notification / MCCD
+                                </b>
+                            </td>
+                            <td className="border p-1" colSpan={2}>
+                                <Form.Item
+                                    name="dateOfNotification"
+                                    className="m-0"
+                                    initialValue={moment()}
+                                >
+                                    <DatePicker
+                                        style={{ width: '100%' }}
+                                        size="large"
+                                        disabled={true}
+                                        defaultValue={moment()}
+                                        format="YYYY-MM-DD"
+                                    />
+                                </Form.Item>
+                            </td>
+                        </tr>
+                        <tr>
                             <td className="border p-1">
                                 <b>
                                     {
@@ -2412,7 +2453,7 @@ export const DataEntryForm = observer(() => {
 
                             <td className="border p-1">
                                 <b>
-                                    Inpatient Number <span style={{color: 'red'}}>*</span>
+                                    Inpatient Number
                                 </b>
                             </td>
                             <td className="border p-1">
@@ -2490,6 +2531,63 @@ export const DataEntryForm = observer(() => {
                         <tr>
                             <td className="border p-1">
                                 <b>
+                                    Surname
+                                </b>
+                            </td>
+                            <td className="border p-1">
+                                <Form.Item
+                                    name="Q7VM7swIWb6">
+                                    <Input
+                                        size="large"
+                                        disabled={
+                                            store.viewMode ||
+                                            store.allDisabled.Q7VM7swIWb6
+                                        }
+                                    />
+                                </Form.Item>
+                            </td>
+                            <td className="border p-1">
+                                <b>
+                                    Given Name
+                                </b>
+                            </td>
+                            <td className="border p-1">
+                                <Form.Item
+                                    name="QmcOqkcNTip"
+                                    className="m-0"
+                                >
+                                    <Input
+                                        size="large"
+                                        disabled={
+                                            store.viewMode ||
+                                            store.allDisabled.QmcOqkcNTip
+                                        }
+                                    />
+                                </Form.Item>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td className="border p-1">
+                                <b>
+                                    Other Name
+                                </b>
+                            </td>
+                            <td className="border p-1">
+                                <Form.Item
+                                    name="tuGPnGHWqQn"
+                                    className="m-0"
+                                >
+                                    <Input
+                                        size="large"
+                                        disabled={
+                                            store.viewMode ||
+                                            store.allDisabled.tuGPnGHWqQn
+                                        }
+                                    />
+                                </Form.Item>
+                            </td>
+                            <td className="border p-1">
+                                <b>
                                     {idTypeLabel}
                                 </b>
                             </td>
@@ -2527,35 +2625,8 @@ export const DataEntryForm = observer(() => {
                                     />
                                 </Form.Item>
                             </td>
-
-
-                            <td className="border p-1">
-                                <b>
-                                    {
-                                        activeLanguage.lang[
-                                            "Name (Full name):"
-                                            ]
-                                    }
-                                    <span style={{color: 'red'}}>*</span>
-                                </b>
-                            </td>
-                            <td className="border p-1">
-                                <Form.Item
-                                    name="ZYKmQ9GPOaF"
-                                    className="m-0"
-                                    rules={[{required: true, message: 'Full name is required'},
-                                    ]}
-                                >
-                                    <Input
-                                        size="large"
-                                        disabled={
-                                            store.viewMode ||
-                                            store.allDisabled.ZYKmQ9GPOaF
-                                        }
-                                    />
-                                </Form.Item>
-                            </td>
                         </tr>
+
                         <tr>
 
                             <td className="border p-1" colSpan={2}>
@@ -2599,12 +2670,15 @@ export const DataEntryForm = observer(() => {
 
                         <tr>
                             <td className="border p-1">
-                                <b>{activeLanguage.lang["Region"]}</b>
+                                <b>{activeLanguage.lang["Region"]}</b> <span style={{color: 'red'}}>*</span>
                             </td>
                             <td className="border p-1">
                                 <Form.Item
                                     name="zwKo51BEayZ"
                                     className="m-0"
+                                    rules={[{required: true, message: 'Selecct a Region'},
+                                    ]}
+
                                 >
                                     <Select
                                         disabled={store.viewMode || store.allDisabled.zwKo51BEayZ}
@@ -2660,12 +2734,14 @@ export const DataEntryForm = observer(() => {
 
                         <tr>
                             <td className="border p-1">
-                                <b>{activeLanguage.lang["District"]}</b>
+                                <b>{activeLanguage.lang["District"]}</b><span style={{color: 'red'}}>*</span>
                             </td>
                             <td className="border p-1">
                                 <Form.Item
                                     name="u44XP9fZweA"
                                     className="m-0"
+                                    rules={[{required: true, message: 'Select a District'},
+                                    ]}
                                 >
                                     <Select
                                         placeholder="Select a district"
@@ -2807,7 +2883,7 @@ export const DataEntryForm = observer(() => {
                                             disabledDate={notTomorrow}
                                             size="large"
                                             placeholder={activeLanguage.lang["Select a Date"]}
-                                            disabled={store.viewMode || store.allDisabled.RbrUuKFSqkZ}
+                                            disabled={!ageKnown} // Disable if date of birth is not known
                                             onChange={(e: any) => {
                                                 if (e?._d) {
                                                     console.log("Date of birth has changed", e);
@@ -2828,12 +2904,14 @@ export const DataEntryForm = observer(() => {
                         </tr>
                         <tr>
                             <td className="border p-1">
-                                <b>{activeLanguage.lang["Sub-County"]}</b>
+                                <b>{activeLanguage.lang["Sub-County"]}</b> <span style={{color: 'red'}}>*</span>
                             </td>
                             <td className="border p-1">
                                 <Form.Item
                                     name="t5nTEmlScSt"
                                     className="m-0"
+                                    rules={[{required: true, message: 'Date of birth is required'},
+                                    ]}
                                 >
                                     <Select
                                         placeholder="Select Sub-County"
@@ -2887,6 +2965,7 @@ export const DataEntryForm = observer(() => {
                                 >
                                     <InputNumber
                                         size="large"
+                                        placeholder="Years"
                                         disabled={
                                             store.viewMode ||
                                             store.allDisabled.q7e7FOXKnOf
@@ -2953,46 +3032,7 @@ export const DataEntryForm = observer(() => {
 
 
                                 </Form.Item>
-                                {/*check for baby age fields */}
-                                {
-                                    mcodmap.rjoVXlCWLYM !== undefined && mcodmap.rjoVXlCWLYM && (
-                                        <Form.Item
-                                            name="TgFI46omIEg"
-                                            className="m-0"
-                                            style={{width: "100%"}}
-                                            label="Minutes"
-                                        >
-                                            <InputNumber
-                                                size="large"
-                                                placeholder="0"
-                                                disabled={
-                                                    store.viewMode ||
-                                                    store.allDisabled.n9s5bKgCCVq
-                                                }
-                                            />
-                                        </Form.Item>
-                                    )
-                                }
 
-
-                                {
-                                    mcodmap.rDI0uhcVLAk !== undefined && mcodmap.rDI0uhcVLAk && (
-                                        <Form.Item
-                                            name="VJXpmHCaAFG"
-                                            className="m-0"
-                                            style={{width: "100%"}}
-                                            label="Hours"
-                                        >
-                                            <InputNumber
-                                                size="large"
-                                                placeholder="0"
-                                                disabled={
-                                                    store.viewMode ||
-                                                    store.allDisabled.n9s5bKgCCVq
-                                                }
-                                            />
-                                        </Form.Item>
-                                    )}
                                 {
 
                                     mcodmap.quKRjZzkSRA !== undefined && mcodmap.quKRjZzkSRA && (
@@ -3004,7 +3044,7 @@ export const DataEntryForm = observer(() => {
                                         >
                                             <InputNumber
                                                 size="large"
-                                                placeholder="0"
+                                                placeholder="Days"
                                                 disabled={
                                                     store.viewMode ||
                                                     store.allDisabled.n9s5bKgCCVq
@@ -3014,6 +3054,45 @@ export const DataEntryForm = observer(() => {
                                         </Form.Item>
                                     )
                                 }
+                                {
+                                    mcodmap.rDI0uhcVLAk !== undefined && mcodmap.rDI0uhcVLAk && (
+                                        <Form.Item
+                                            name="VJXpmHCaAFG"
+                                            className="m-0"
+                                            style={{width: "100%"}}
+                                            label="Hours"
+                                        >
+                                            <InputNumber
+                                                size="large"
+                                                placeholder="Hours"
+                                                disabled={
+                                                    store.viewMode ||
+                                                    store.allDisabled.n9s5bKgCCVq
+                                                }
+                                            />
+                                        </Form.Item>
+                                    )}
+                                {/*check for baby age fields */}
+                                {
+                                    mcodmap.rjoVXlCWLYM !== undefined && mcodmap.rjoVXlCWLYM && (
+                                        <Form.Item
+                                            name="TgFI46omIEg"
+                                            className="m-0"
+                                            style={{width: "100%"}}
+                                            label="Minutes"
+                                        >
+                                            <InputNumber
+                                                size="large"
+                                                placeholder="Minutes"
+                                                disabled={
+                                                    store.viewMode ||
+                                                    store.allDisabled.n9s5bKgCCVq
+                                                }
+                                            />
+                                        </Form.Item>
+                                    )
+                                }
+
                                 {/*fix css for age row*/}
                                 <Form.Item
                                     // name="v8mvHHXo06E"
@@ -3026,12 +3105,14 @@ export const DataEntryForm = observer(() => {
                         </tr>
                         <tr>
                             <td className="border p-1">
-                                <b>{activeLanguage.lang["Village"]}</b>
+                                <b>{activeLanguage.lang["Village"]}</b>  <span style={{color: 'red'}}>*</span>
                             </td>
                             <td className="border p-1">
                                 <Form.Item
                                     name="dsiwvNQLe5n"
                                     className="m-0"
+                                    rules={[{required: true, message: 'Date of birth is required'},
+                                    ]}
                                 >
                                     <Input
                                         size="large"
@@ -3102,20 +3183,20 @@ export const DataEntryForm = observer(() => {
                                 </b>
                             </td>
                             <td className="border p-1">
-                                <Form.Item
-                                    name="xNCSFrgdUgi"
-                                    className="m-0"
-                                    rules={[{required: true, message: 'Place of death is required'},
-                                    ]}
-                                >
-                                    <Input
-                                        size="large"
-                                        disabled={
-                                            store.viewMode ||
-                                            store.allDisabled.xNCSFrgdUgi
-                                        }
-                                    />
-                                </Form.Item>
+                                {optionSets ? (
+
+                                    <Form.Item
+                                        name="xNCSFrgdUgi"
+                                        className="m-0"
+                                        rules={[{required: true, message: 'Place of death is required'},
+                                        ]}
+                                    >
+                                        <Select placeholder="Select an option">
+												<Option value="Community">Community</Option>
+												<Option value="Facility">Facility</Option>
+											</Select>
+                                    </Form.Item>
+                                ) : null}
                             </td>
                             <td className="border p-1">
                                 <b>
@@ -3545,11 +3626,12 @@ export const DataEntryForm = observer(() => {
                                             <td>
                                                 <Input
                                                     size="large"
-                                                    disabled={
-                                                        store.viewMode ||
-                                                        store.allDisabled
-                                                            .cSDJ9kSJkFP
-                                                    }
+                                                    // disabled={
+                                                    //     store.viewMode ||
+                                                    //     store.allDisabled
+                                                    //         .cSDJ9kSJkFP
+                                                    // }
+                                                    disabled={!!form.getFieldValue('zD0E77W4rFs')} // Disable when code exists
                                                     value={testVal}
                                                     onChange={(e: any) => {
                                                         setTestVal(
@@ -3724,11 +3806,12 @@ export const DataEntryForm = observer(() => {
                                             <td>
                                                 <Input
                                                     size="large"
-                                                    disabled={
-                                                        store.viewMode ||
-                                                        store.allDisabled
-                                                            .uckvenVFnwf
-                                                    }
+                                                    // disabled={
+                                                    //     store.viewMode ||
+                                                    //     store.allDisabled
+                                                    //         .uckvenVFnwf
+                                                    // }
+                                                    disabled={!!form.getFieldValue('tuMMQsGtE69')} // Disable when code exists
                                                     value={testVal2}
                                                     onChange={(e: any) => {
                                                         setTestVal2(
@@ -3895,11 +3978,12 @@ export const DataEntryForm = observer(() => {
                                             <td>
                                                 <Input
                                                     size="large"
-                                                    disabled={
-                                                        store.viewMode ||
-                                                        store.allDisabled
-                                                            .ZFdJRT3PaUd
-                                                    }
+                                                    // disabled={
+                                                    //     store.viewMode ||
+                                                    //     store.allDisabled
+                                                    //         .ZFdJRT3PaUd
+                                                    // }
+                                                    disabled={!!form.getFieldValue('C8n6hBilwsX')} // Disable when code exists
                                                     value={testVal3}
                                                     onChange={(e: any) => {
                                                         setTestVal3(
@@ -4064,11 +4148,12 @@ export const DataEntryForm = observer(() => {
                                             <td>
                                                 <Input
                                                     size="large"
-                                                    disabled={
-                                                        store.viewMode ||
-                                                        store.allDisabled
-                                                            .Op5pSvgHo1M
-                                                    }
+                                                    // disabled={
+                                                    //     store.viewMode ||
+                                                    //     store.allDisabled
+                                                    //         .Op5pSvgHo1M
+                                                    // }
+                                                    disabled={!!form.getFieldValue('IeS8V8Yf40N')} // Disable when code exists
                                                     value={testVal4}
                                                     onChange={(e: any) => {
                                                         setTestVal4(
@@ -5081,7 +5166,8 @@ export const DataEntryForm = observer(() => {
                                     <DatePicker
                                         disabledDate={notTomorrow}
                                         size="large"
-                                        disabled={false}
+                                        // disabled={false}
+                                        disabled={form.getFieldValue('Kk0hmrJPR90') === 'No' || form.getFieldValue('Kk0hmrJPR90') === 'Unknown'}
                                         key={frameBKey1}
                                         // value={store.defaultValues.j5TIQx3gHyF?._d==="invalid"}
                                     />
@@ -5106,7 +5192,8 @@ export const DataEntryForm = observer(() => {
                                 >
                                     <Input
                                         size="large"
-                                        disabled={false}
+                                        // disabled={false}
+                                        disabled={form.getFieldValue('Kk0hmrJPR90') === 'No' || form.getFieldValue('Kk0hmrJPR90') === 'Unknown'}
                                         key={frameBKey2}
                                     />
                                 </Form.Item>
@@ -5157,7 +5244,7 @@ export const DataEntryForm = observer(() => {
                                 ) : null}
                             </td>
                         </tr>
-                        <tr>
+                        <tr style={{ display: form.getFieldValue('jY3K6Bv4o9Q') === 'Yes' ? '' : 'none' }}>
                             <td className="border p-1">
                                 <b>
                                     {
@@ -5172,14 +5259,15 @@ export const DataEntryForm = observer(() => {
                                     <Form.Item
                                         name="UfG52s4YcUt"
                                         className="m-0"
+
                                     >
                                         {optionSet(
                                             "YN01",
                                             "UfG52s4YcUt",
                                             (e: any) => {
+
                                             },
                                             disableFrameB2,
-
                                             frameBKey3
                                         )}
                                     </Form.Item>
@@ -5479,10 +5567,11 @@ export const DataEntryForm = observer(() => {
                                 >
                                     <Input
                                         size="large"
-                                        disabled={
-                                            store.viewMode ||
-                                            store.allDisabled.DKlOhZJOCrX
-                                        }
+                                        // disabled={
+                                        //     store.viewMode ||
+                                        //     store.allDisabled.DKlOhZJOCrX
+                                        // }
+                                        disabled={!form.getFieldValue('AZSlwlRAFig')}
                                     />
                                 </Form.Item>
                             </td>
@@ -5504,10 +5593,11 @@ export const DataEntryForm = observer(() => {
                                 >
                                     <Input
                                         size="large"
-                                        disabled={
-                                            store.viewMode ||
-                                            store.allDisabled.kGIDD5xIeLC
-                                        }
+                                        // disabled={
+                                        //     store.viewMode ||
+                                        //     store.allDisabled.kGIDD5xIeLC
+                                        // }
+                                        disabled={!form.getFieldValue('AZSlwlRAFig')}
                                     />
                                 </Form.Item>
                             </td>
@@ -5538,6 +5628,29 @@ export const DataEntryForm = observer(() => {
                                                     ]
                                             }
                                         </h3>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td className="border p-1" colSpan={2}>
+                                        <b>
+                                           Fetal
+                                        </b>
+                                    </td>
+                                    <td className="border p-1">
+                                        {optionSets ? (
+
+                                            <Form.Item
+                                                name="fetal"
+                                                className="m-0"
+                                            >
+                                                <Select placeholder="Select an option"
+                                                 disabled={personsAge >= 1} // Disable when age is 1 or more
+                                                >
+                                                    <Option value="Yes">Yes</Option>
+                                                    <Option value="No">No</Option>
+                                                </Select>
+                                            </Form.Item>
+                                        ) : null}
                                     </td>
                                 </tr>
                                 <tr>
@@ -5642,6 +5755,7 @@ export const DataEntryForm = observer(() => {
                                         >
                                             <InputNumber
                                                 size="large"
+                                                max={5000}
                                                 disabled={
                                                     store.viewMode ||
                                                     store.allDisabled.xAWYJtQsg8M
@@ -5667,6 +5781,7 @@ export const DataEntryForm = observer(() => {
                                         >
                                             <InputNumber
                                                 size="large"
+                                                max={40}
                                                 disabled={
                                                     store.viewMode ||
                                                     store.allDisabled.lQ1Byr04JTx
@@ -5690,7 +5805,8 @@ export const DataEntryForm = observer(() => {
                                             className="m-0"
                                         >
                                             <InputNumber
-                                                min={1}
+                                                min={10}
+                                                max={70}
                                                 size="large"
                                                 disabled={
                                                     store.viewMode ||

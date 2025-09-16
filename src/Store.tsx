@@ -315,6 +315,9 @@ class Store {
 	@observable allDisabled: any = {
 		ZKBE8Xm9DJG: false,
 		ZYKmQ9GPOaF: false,
+        Q7VM7swIWb6: false,
+        QmcOqkcNTip: false,
+        tuGPnGHWqQn: false,
 		MOstDqSY0gO: false,
 		zwKo51BEayZ: false,
 		bNpMzyShDCX: false,
