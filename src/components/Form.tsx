@@ -2972,7 +2972,7 @@ export const DataEntryForm = observer(() => {
                                 <Form.Item
                                     name="t5nTEmlScSt"
                                     className="m-0"
-                                    rules={[{required: true, message: 'Date of birth is required'},
+                                    rules={[{required: true, message: 'Sub-County is required'},
                                     ]}
                                 >
                                     <Select
