@@ -3223,28 +3223,6 @@ export const DataEntryForm = observer(() => {
                         <tr>
                             <td className="border p-1">
                                 <b>
-                                    Place of Death <span style={{color: 'red'}}>*</span>
-                                    {/*{activeLanguage.lang["Place of Birth"]}*/}
-                                </b>
-                            </td>
-                            <td className="border p-1">
-                                {optionSets ? (
-
-                                    <Form.Item
-                                        name="xNCSFrgdUgi"
-                                        className="m-0"
-                                        rules={[{required: true, message: 'Place of death is required'},
-                                        ]}
-                                    >
-                                        <Select placeholder="Select an option">
-												<Option value="Community">Community</Option>
-												<Option value="Facility">Facility</Option>
-											</Select>
-                                    </Form.Item>
-                                ) : null}
-                            </td>
-                            <td className="border p-1">
-                                <b>
                                     {
                                         activeLanguage.lang[
                                             "Date and time of death"
