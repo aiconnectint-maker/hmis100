@@ -388,21 +388,14 @@ export const DataEntryForm = observer(() => {
 
     const fetchSubCounties = async () => {
         try {
-            const response = await fetch(
-                // `/api/organisationUnits/${chosenDistrictId}?paging=false&fields=level,id,children[id,displayName,level,children[id,displayName,level]]` //localhost
-                `https://hmis.health.go.ug/api/organisationUnits/${chosenDistrictId}?paging=false&fields=level,id,children[id,displayName,level,children[id,displayName,level]]`
-            );
-            const data = await response.json();
+            const url = `/api/organisationUnits/${chosenDistrictId}?paging=false&fields=level,id,children[id,displayName,level]`;
+            const data = await store.engine.link.fetch(url);
             console.log("sub data", data);
 
-            // Extract sub-counties (level 5) from the nested children
-            const level4Units = data?.children ?? [];
+            // Extract sub-counties (level 4) from the district's children
+            const level4SubCounties = (data?.children ?? []).filter(child => child.level === 4);
 
-            const level5SubCounties = level4Units.flatMap((level4) =>
-                (level4.children ?? []).filter(child => child.level === 5)
-            );
-
-            const formattedSubCounties = level5SubCounties.map((subcounty) => ({
+            const formattedSubCounties = level4SubCounties.map((subcounty) => ({
                 id: subcounty.id,
                 displayName: subcounty.displayName,
             }));
@@ -1527,7 +1520,7 @@ export const DataEntryForm = observer(() => {
                     style={{width: "100%"}}
                     size="large"
                     disabled={
-                        store.viewMode || store.allDisabled[field]
+                        store.viewMode || store.allDisabled[field] || disabled
                     }
                     key={optionalKey || `${Math.random()}`}
                     onChange={
@@ -3489,18 +3482,7 @@ export const DataEntryForm = observer(() => {
                         )}
                     </div>
 
-                    {store.isAdmin && customRowLength < 10 && (
-                        <button
-                            disabled={fetching}
-                            onClick={(e) => {
-                                e.preventDefault();
-                                setCreatingFiled(true);
-                                // setCustomRowLength(customRowLength + 1);
-                            }}
-                        >
-                            +Add field
-                        </button>
-                    )}
+
 
                     <table className="my-2 w-full border-collapse px-2"
                            style={{...(notifyx ? ({display: "none"}) : ({}))}}>
@@ -5364,7 +5346,15 @@ export const DataEntryForm = observer(() => {
                                     <Checkbox
                                         disabled={
                                             store.viewMode ||
-                                            store.allDisabled.FhHPxY16vet
+                                            store.allDisabled.FhHPxY16vet ||
+                                            (form.getFieldValue("KsGOxFyzIs1") ||
+                                            form.getFieldValue("b4yPk98om7e") ||
+                                            form.getFieldValue("gNM2Yhypydx") ||
+                                            form.getFieldValue("tYH7drlbNya") ||
+                                            form.getFieldValue("fQWuywOaoN2") ||
+                                            form.getFieldValue("wX3i3gkTG4m") ||
+                                            form.getFieldValue("xDMX2CJ4Xw3") ||
+                                            form.getFieldValue("o1hG9vr0peF"))
                                         }
                                     >
                                         {activeLanguage.lang["Yes"]}
@@ -5383,7 +5373,15 @@ export const DataEntryForm = observer(() => {
                                     <Checkbox
                                         disabled={
                                             store.viewMode ||
-                                            store.allDisabled.KsGOxFyzIs1
+                                            store.allDisabled.KsGOxFyzIs1 ||
+                                            (form.getFieldValue("FhHPxY16vet") ||
+                                            form.getFieldValue("b4yPk98om7e") ||
+                                            form.getFieldValue("gNM2Yhypydx") ||
+                                            form.getFieldValue("tYH7drlbNya") ||
+                                            form.getFieldValue("fQWuywOaoN2") ||
+                                            form.getFieldValue("wX3i3gkTG4m") ||
+                                            form.getFieldValue("xDMX2CJ4Xw3") ||
+                                            form.getFieldValue("o1hG9vr0peF"))
                                         }
                                     >
                                         {activeLanguage.lang["Yes"]}
@@ -5408,7 +5406,15 @@ export const DataEntryForm = observer(() => {
                                     <Checkbox
                                         disabled={
                                             store.viewMode ||
-                                            store.allDisabled.b4yPk98om7e
+                                            store.allDisabled.b4yPk98om7e ||
+                                            (form.getFieldValue("FhHPxY16vet") ||
+                                            form.getFieldValue("KsGOxFyzIs1") ||
+                                            form.getFieldValue("gNM2Yhypydx") ||
+                                            form.getFieldValue("tYH7drlbNya") ||
+                                            form.getFieldValue("fQWuywOaoN2") ||
+                                            form.getFieldValue("wX3i3gkTG4m") ||
+                                            form.getFieldValue("xDMX2CJ4Xw3") ||
+                                            form.getFieldValue("o1hG9vr0peF"))
                                         }
                                     >
                                         {activeLanguage.lang["Yes"]}
@@ -5429,7 +5435,15 @@ export const DataEntryForm = observer(() => {
                                     <Checkbox
                                         disabled={
                                             store.viewMode ||
-                                            store.allDisabled.gNM2Yhypydx
+                                            store.allDisabled.gNM2Yhypydx ||
+                                            (form.getFieldValue("FhHPxY16vet") ||
+                                            form.getFieldValue("KsGOxFyzIs1") ||
+                                            form.getFieldValue("b4yPk98om7e") ||
+                                            form.getFieldValue("tYH7drlbNya") ||
+                                            form.getFieldValue("fQWuywOaoN2") ||
+                                            form.getFieldValue("wX3i3gkTG4m") ||
+                                            form.getFieldValue("xDMX2CJ4Xw3") ||
+                                            form.getFieldValue("o1hG9vr0peF"))
                                         }
                                     >
                                         {activeLanguage.lang["Yes"]}
@@ -5454,7 +5468,15 @@ export const DataEntryForm = observer(() => {
                                     <Checkbox
                                         disabled={
                                             store.viewMode ||
-                                            store.allDisabled.tYH7drlbNya
+                                            store.allDisabled.tYH7drlbNya ||
+                                            (form.getFieldValue("FhHPxY16vet") ||
+                                            form.getFieldValue("KsGOxFyzIs1") ||
+                                            form.getFieldValue("b4yPk98om7e") ||
+                                            form.getFieldValue("gNM2Yhypydx") ||
+                                            form.getFieldValue("fQWuywOaoN2") ||
+                                            form.getFieldValue("wX3i3gkTG4m") ||
+                                            form.getFieldValue("xDMX2CJ4Xw3") ||
+                                            form.getFieldValue("o1hG9vr0peF"))
                                         }
                                     >
                                         {activeLanguage.lang["Yes"]}
@@ -5479,7 +5501,15 @@ export const DataEntryForm = observer(() => {
                                     <Checkbox
                                         disabled={
                                             store.viewMode ||
-                                            store.allDisabled.fQWuywOaoN2
+                                            store.allDisabled.fQWuywOaoN2 ||
+                                            (form.getFieldValue("FhHPxY16vet") ||
+                                            form.getFieldValue("KsGOxFyzIs1") ||
+                                            form.getFieldValue("b4yPk98om7e") ||
+                                            form.getFieldValue("gNM2Yhypydx") ||
+                                            form.getFieldValue("tYH7drlbNya") ||
+                                            form.getFieldValue("wX3i3gkTG4m") ||
+                                            form.getFieldValue("xDMX2CJ4Xw3") ||
+                                            form.getFieldValue("o1hG9vr0peF"))
                                         }
                                     >
                                         {activeLanguage.lang["Yes"]}
@@ -5506,7 +5536,15 @@ export const DataEntryForm = observer(() => {
                                     <Checkbox
                                         disabled={
                                             store.viewMode ||
-                                            store.allDisabled.wX3i3gkTG4m
+                                            store.allDisabled.wX3i3gkTG4m ||
+                                            (form.getFieldValue("FhHPxY16vet") ||
+                                            form.getFieldValue("KsGOxFyzIs1") ||
+                                            form.getFieldValue("b4yPk98om7e") ||
+                                            form.getFieldValue("gNM2Yhypydx") ||
+                                            form.getFieldValue("tYH7drlbNya") ||
+                                            form.getFieldValue("fQWuywOaoN2") ||
+                                            form.getFieldValue("xDMX2CJ4Xw3") ||
+                                            form.getFieldValue("o1hG9vr0peF"))
                                         }
                                     >
                                         {activeLanguage.lang["Yes"]}
@@ -5525,7 +5563,15 @@ export const DataEntryForm = observer(() => {
                                     <Checkbox
                                         disabled={
                                             store.viewMode ||
-                                            store.allDisabled.xDMX2CJ4Xw3
+                                            store.allDisabled.xDMX2CJ4Xw3 ||
+                                            (form.getFieldValue("FhHPxY16vet") ||
+                                            form.getFieldValue("KsGOxFyzIs1") ||
+                                            form.getFieldValue("b4yPk98om7e") ||
+                                            form.getFieldValue("gNM2Yhypydx") ||
+                                            form.getFieldValue("tYH7drlbNya") ||
+                                            form.getFieldValue("fQWuywOaoN2") ||
+                                            form.getFieldValue("wX3i3gkTG4m") ||
+                                            form.getFieldValue("o1hG9vr0peF"))
                                         }
                                     >
                                         {activeLanguage.lang["Yes"]}
@@ -5544,7 +5590,15 @@ export const DataEntryForm = observer(() => {
                                     <Checkbox
                                         disabled={
                                             store.viewMode ||
-                                            store.allDisabled.o1hG9vr0peF
+                                            store.allDisabled.o1hG9vr0peF ||
+                                            (form.getFieldValue("FhHPxY16vet") ||
+                                            form.getFieldValue("KsGOxFyzIs1") ||
+                                            form.getFieldValue("b4yPk98om7e") ||
+                                            form.getFieldValue("gNM2Yhypydx") ||
+                                            form.getFieldValue("tYH7drlbNya") ||
+                                            form.getFieldValue("fQWuywOaoN2") ||
+                                            form.getFieldValue("wX3i3gkTG4m") ||
+                                            form.getFieldValue("xDMX2CJ4Xw3"))
                                         }
                                     >
                                         {activeLanguage.lang["Yes"]}
@@ -5565,7 +5619,11 @@ export const DataEntryForm = observer(() => {
                             <td className="border p-1">
                                 <Form.Item name="AZSlwlRAFig" className="m-0" valuePropName="checked">
                                     <Radio.Group
-                                        disabled={store.viewMode || store.allDisabled.AZSlwlRAFig}
+                                        disabled={
+                                            store.viewMode ||
+                                            store.allDisabled.AZSlwlRAFig ||
+                                            form.getFieldValue("FhHPxY16vet")
+                                        }
                                     >
                                         <Radio value="Yes">{activeLanguage.lang["Yes"]}</Radio>
                                         <Radio value="No">{activeLanguage.lang["No"]}</Radio>
@@ -5588,7 +5646,8 @@ export const DataEntryForm = observer(() => {
                                         size="large"
                                         disabled={
                                             store.viewMode ||
-                                            store.allDisabled.U18Tnfz9EKd
+                                            store.allDisabled.U18Tnfz9EKd ||
+                                            form.getFieldValue("FhHPxY16vet")
                                         }
                                     />
                                 </Form.Item>
@@ -5615,7 +5674,7 @@ export const DataEntryForm = observer(() => {
                                         //     store.viewMode ||
                                         //     store.allDisabled.DKlOhZJOCrX
                                         // }
-                                        disabled={!form.getFieldValue('AZSlwlRAFig')}
+                                        disabled={!form.getFieldValue('AZSlwlRAFig') || form.getFieldValue("FhHPxY16vet")}
                                     />
                                 </Form.Item>
                             </td>
@@ -5641,7 +5700,7 @@ export const DataEntryForm = observer(() => {
                                         //     store.viewMode ||
                                         //     store.allDisabled.kGIDD5xIeLC
                                         // }
-                                        disabled={!form.getFieldValue('AZSlwlRAFig')}
+                                        disabled={!form.getFieldValue('AZSlwlRAFig') || form.getFieldValue("FhHPxY16vet")}
                                     />
                                 </Form.Item>
                             </td>
@@ -5753,7 +5812,7 @@ export const DataEntryForm = observer(() => {
                                                             );
                                                         }
                                                     },
-                                                    personsAge > 1
+                                                    personsAge > 1 || form.getFieldValue("fetal") === "Infant"
                                                 )}
                                             </Form.Item>
                                         ) : null}
