@@ -34,7 +34,18 @@ ReactDOM.render(
   document.getElementById("root")
 );
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
+// Register service worker for PWA functionality (offline support, caching, etc.)
 // Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+serviceWorker.register({
+  onSuccess: (registration) => {
+    console.log('Service Worker registered successfully:', registration);
+  },
+  onUpdate: (registration) => {
+    console.log('Service Worker updated:', registration);
+    // Notify user that a new version is available
+    if (window.confirm('A new version of the app is available. Reload to update?')) {
+      registration.waiting?.postMessage({ type: 'SKIP_WAITING' });
+      window.location.reload();
+    }
+  }
+});
