@@ -15,12 +15,12 @@ import {
     Alert,
 } from "antd";
 import moment from "moment";
-import {observer} from "mobx-react";
-import {useStore} from "../Context";
-import {useTranslation} from "../utils/useTranslation";
+import { observer } from "mobx-react";
+import { useStore } from "../Context";
+import { useTranslation } from "../utils/useTranslation";
 import image from './img/moh_logo.png';
 
-const {Title} = Typography;
+const { Title } = Typography;
 
 const styles: { [name: string]: React.CSSProperties } = {
     tableCell: {
@@ -64,7 +64,10 @@ const PrintableFormData = observer((props: any) => {
     const tr = useTranslation();
 
     // const caseNumber = props.formVals["ZKBE8Xm9DJG"];
-    const name = props.formVals["ZYKmQ9GPOaF"];
+    const surname = props.formVals["Q7VM7swIWb6"];
+    const fullname = props.formVals["ZYKmQ9GPOaF"];
+    const givenName = !!fullname ? fullname : props.formVals["QmcOqkcNTip"];
+    const otherName = props.formVals["tuGPnGHWqQn"];
     const nin = props.formVals["MOstDqSY0gO"];
     const sex = props.formVals["e96GB4CXyd3"];
     const district = props.formVals["u44XP9fZweA"];
@@ -89,60 +92,62 @@ const PrintableFormData = observer((props: any) => {
 
     return (
         <>
-            <table className="my-2 w-full print-table"  style={{ borderCollapse: 'collapse' }}>
+            <table className="my-2 w-full print-table" style={{ borderCollapse: 'collapse' }}>
                 <thead>
-                <tr>
-                    <th style={cellStyle}>FULL NAME</th>
-                    {/*<th style={cellStyle}>OTHER NAMES</th>*/}
-                </tr>
+                    <tr>
+                        <th style={cellStyle}>SURNAME</th>
+                        <th style={cellStyle}>GIVEN NAME</th>
+                        <th style={cellStyle}>OTHER NAME</th>
+                    </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <td style={cellStyle}> {name}</td>
-                    {/*<td style={cellStyle}>{name}</td>*/}
-                </tr>
+                    <tr>
+                        <td style={cellStyle}> {surname}</td>
+                        <td style={cellStyle}> {givenName}</td>
+                        <td style={cellStyle}> {otherName}</td>
+                    </tr>
                 </tbody>
             </table>
 
             <table className="my-2 w-full print-table" style={{ borderCollapse: 'collapse' }}>
                 <thead>
-                <tr>
-                    <th style={cellStyle}>NIN of deceased</th>
-                    <th style={cellStyle}>SEX</th>
-                    <th style={cellStyle}>DISTRICT</th>
-                    <th style={cellStyle}>SUB-COUNTY</th>
-                    <th style={cellStyle}>COUNTY</th>
-                    <th style={cellStyle}>VILLAGE</th>
-                </tr>
+                    <tr>
+                        <th style={cellStyle}>NIN of deceased</th>
+                        <th style={cellStyle}>SEX</th>
+                        <th style={cellStyle}>DISTRICT</th>
+                        <th style={cellStyle}>SUB-COUNTY</th>
+                        <th style={cellStyle}>COUNTY</th>
+                        <th style={cellStyle}>VILLAGE</th>
+                    </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <td style={cellStyle}> {nin}</td>
-                    <td style={cellStyle}>{sex}</td>
-                    <td style={cellStyle}> {district}</td>
-                    <td style={cellStyle}>{subcounty}</td>
-                    <td style={cellStyle}> {county}</td>
-                    <td style={cellStyle}>{village}</td>
-                </tr>
+                    <tr>
+                        <td style={cellStyle}> {nin}</td>
+                        <td style={cellStyle}>{sex}</td>
+                        <td style={cellStyle}> {district}</td>
+                        <td style={cellStyle}>{subcounty}</td>
+                        <td style={cellStyle}> {county}</td>
+                        <td style={cellStyle}>{village}</td>
+                    </tr>
                 </tbody>
             </table>
 
             <table className="my-2 w-full print-table" style={{ borderCollapse: 'collapse' }}>
                 <thead>
-                <tr>
-                    <th style={cellStyle}>DATE OF DEATH OF DECEASED</th>
-                    <th style={cellStyle}>PLACE OF DEATH</th>
-                    <th style={cellStyle}>CAUSE OF DEATH</th>
-                    <th style={cellStyle}>WHETHER CAUSE OF DEATH WAS MEDICALLY CERTIFIED</th>
-                </tr>
+                    <tr>
+                        <th style={cellStyle}>DATE OF DEATH OF DECEASED</th>
+                        <th style={cellStyle}>PLACE OF DEATH</th>
+                        <th style={cellStyle}>CAUSE OF DEATH</th>
+                        <th style={cellStyle}>WHETHER CAUSE OF DEATH WAS MEDICALLY CERTIFIED</th>
+                    </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <td style={cellStyle}> {dateOfDeath}</td>
-                    <td style={cellStyle}>{placeOfDeath}</td>
-                    <td style={cellStyle}> {causeOfDeath}</td>
-                    <td style={cellStyle}>{certified ? "YES" : "NO"}</td>
-                </tr>
+                    <tr>
+                        <td style={cellStyle}> {dateOfDeath}</td>
+                        <td style={cellStyle}>{placeOfDeath}</td>
+                        <td style={cellStyle}> {causeOfDeath}</td>
+                        <td style={cellStyle}>{certified ? "YES" : "NO"}</td>
+                    </tr>
                 </tbody>
             </table>
             {/*<table className="my-2 w-full print-table">*/}
@@ -158,7 +163,7 @@ const PrintableFormData = observer((props: any) => {
             {/*	</tbody>*/}
             {/*</table>*/}
 
-            <div style={{display: "flex", flexDirection: "column"}}>
+            <div style={{ display: "flex", flexDirection: "column" }}>
                 <div
                     style={{
                         marginTop: "30px",
@@ -168,12 +173,12 @@ const PrintableFormData = observer((props: any) => {
                         alignItems: "flex-end",
                     }}
                 >
-                    <b style={{marginBottom: "10px"}}>{tr('Issued On')}:</b>
-                    <div style={{...styles.answerLine, marginLeft: "8px"}}>
+                    <b style={{ marginBottom: "10px" }}>{tr('Issued On')}:</b>
+                    <div style={{ ...styles.answerLine, marginLeft: "8px" }}>
                         {eventDate}
                     </div>
                 </div>
-                <div style={{display: "flex", justifyContent: "flex-end"}}>
+                <div style={{ display: "flex", justifyContent: "flex-end" }}>
                     <div
                         style={{
                             marginTop: "40px",
@@ -185,7 +190,7 @@ const PrintableFormData = observer((props: any) => {
                         <div style={styles.answerLine}></div>
                         <b>{tr('Notifier Of Births and Deaths')}</b>
                         <div
-                            style={{...styles.answerLine, marginTop: "50px"}}
+                            style={{ ...styles.answerLine, marginTop: "50px" }}
                         >
                             {facility}
                         </div>
@@ -202,17 +207,17 @@ const CardTitle = observer((props: any) => {
 
     return (
         <>
-            <div style={{textAlign: "right"}}>
+            <div style={{ textAlign: "right" }}>
                 {tr('REG NO:')} {props.caseNumber}
             </div>
-            <div style={{textAlign: "center"}}>
+            <div style={{ textAlign: "center" }}>
                 <p>
-                    <img src={image} alt="Logo" style={{width:"20%", height: "20%"}}/></p>
+                    <img src={image} alt="Logo" style={{ width: "20%", height: "20%" }} /></p>
             </div>
             <Title className="text-center" level={2}>
                 {tr('DEATH NOTIFICATION RECORD')}
             </Title>
-            <p style={{fontStyle: "italic", textAlign: "center"}}>
+            <p style={{ fontStyle: "italic", textAlign: "center" }}>
                 {tr('Registration of Persons Act 2015')}
             </p>
         </>
@@ -222,7 +227,7 @@ const CardTitle = observer((props: any) => {
 export const FormPrint = React.forwardRef<any, any>((props, ref) => {
     const caseNumber = props.formVals["ZKBE8Xm9DJG"];
     return (
-        <Card ref={ref} title={<CardTitle caseNumber={caseNumber}/>}>
+        <Card ref={ref} title={<CardTitle caseNumber={caseNumber} />}>
             <PrintableFormData {...props} />
         </Card>
     );

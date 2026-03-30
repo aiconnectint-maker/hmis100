@@ -18,18 +18,18 @@ const extraHeaders =
     : {};
 
 export const App = observer(() => {
-    const engine = useDataEngine();
+  const engine = useDataEngine();
   store.setEngine(engine);
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(false);
 
 
-//set on app reload
-    useEffect(() => {
-        if (window === window.parent) {
-            store.showEvents();
-            }
-    },[])
+  //set on app reload
+  useEffect(() => {
+    if (window === window.parent) {
+      store.showEvents();
+    }
+  }, [])
 
   const fetchOrgs = async () => {
     setFetching(true);
@@ -47,25 +47,25 @@ export const App = observer(() => {
     fetchOrgs();
   }, []);
 
-	useEffect(() => {
-		if (store?.organisationUnits?.length || store?.fetchingOrgUnits) return;
-		async function test() {
-			setFetching(true);
-			try {
-				console.log("Fetching orgs...");
-				await Promise.all([
-					store.initApp(),
-					store.loadUserOrgUnits()
-				]);
-			} catch (error) {
-				console.log({error})
-			} finally {
-				setFetching(false);
-			}
+  useEffect(() => {
+    if (store?.organisationUnits?.length || store?.fetchingOrgUnits) return;
+    async function test() {
+      setFetching(true);
+      try {
+        console.log("Fetching orgs...");
+        await Promise.all([
+          store.initApp(),
+          store.loadUserOrgUnits()
+        ]);
+      } catch (error) {
+        console.log({ error })
+      } finally {
+        setFetching(false);
+      }
 
-		}
-		test();
-	}, []);
+    }
+    test();
+  }, []);
 
   useEffect(() => {
     console.log(
@@ -114,7 +114,7 @@ export const App = observer(() => {
   };
 
   useEffect(() => {
-	console.log("loading app...")
+    console.log("loading app...")
     loadApp();
   }, []);
 
@@ -123,15 +123,15 @@ export const App = observer(() => {
   return (
     <StoreContext.Provider value={store}>
       <HeaderBar
-				appName={" Medical Certificate of Cause of Death"}
-				style={{
-					left: 0,
-					position: "fixed",
-					top: 0,
-					width: "100%",
-					zIndex: 1000,
-				}}
-			/>
+        appName={" Medical Certificate of Cause of Death"}
+        style={{
+          left: 0,
+          position: "fixed",
+          top: 0,
+          width: "100%",
+          zIndex: 1000,
+        }}
+      />
       {store.currentPage === "4" ? (
         <div className="p-2">
           <ApiConfigPage />

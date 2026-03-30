@@ -8,5 +8,5 @@ module.exports = override(
     }),
     addLessLoader({
         javascriptEnabled: true
-    }),
+    })
 );

@@ -51,6 +51,10 @@ export const mcodmap = {
 	Ylht9kCLSRW: "Ylht9kCLSRW",
 	myydnkmLfhp: "myydnkmLfhp",
 
+	Q7VM7swIWb6: "Q7VM7swIWb6",
+	QmcOqkcNTip: "QmcOqkcNTip",
+	tuGPnGHWqQn: "tuGPnGHWqQn",
+
 	QGFYJK00ES7: "QGFYJK00ES7",
 	aC64sB86ThG: "aC64sB86ThG",
 
@@ -82,6 +86,9 @@ const dlcolumns = [
 	"ZYKmQ9GPOaF",
 	"FGagV1Utrdh",
 	"MOstDqSY0gO",
+	"Q7VM7swIWb6",
+	"QmcOqkcNTip",
+	"tuGPnGHWqQn",
 
 	"zwKo51BEayZ",
 	"bNpMzyShDCX",
@@ -315,9 +322,9 @@ class Store {
 	@observable allDisabled: any = {
 		ZKBE8Xm9DJG: false,
 		ZYKmQ9GPOaF: false,
-        Q7VM7swIWb6: false,
-        QmcOqkcNTip: false,
-        tuGPnGHWqQn: false,
+		Q7VM7swIWb6: false,
+		QmcOqkcNTip: false,
+		tuGPnGHWqQn: false,
 		MOstDqSY0gO: false,
 		zwKo51BEayZ: false,
 		bNpMzyShDCX: false,
@@ -473,6 +480,9 @@ class Store {
 			"&dimension=aKclf7Yl1PE.ZKBE8Xm9DJG" +
 			"&dimension=aKclf7Yl1PE.MOstDqSY0gO" +
 			"&dimension=aKclf7Yl1PE.ZYKmQ9GPOaF" +
+			"&dimension=aKclf7Yl1PE.Q7VM7swIWb6" +
+			"&dimension=aKclf7Yl1PE.QmcOqkcNTip" +
+			"&dimension=aKclf7Yl1PE.tuGPnGHWqQn" +
 			"&dimension=aKclf7Yl1PE.zwKo51BEayZ" +
 			"&dimension=aKclf7Yl1PE.Z41di0TRjIu" +
 			"&dimension=aKclf7Yl1PE.dsiwvNQLe5n" +
@@ -1895,7 +1905,6 @@ class Store {
 						attributeCc: this.attributeCC,
 						attributeCos: this.selectedNationality,
 						includeAllDataElements: "true",
-						order: this.sorter,
 						...(this.selectedDlDateRange && {
 							startDate: this.selectedDlDateRange[0],
 							endDate: this.selectedDlDateRange[1],
@@ -1920,7 +1929,7 @@ class Store {
 				console.log(query1, data);
 
 				runInAction(() => {
-					this.data = data.events.instances;
+					this.data = data.events.events;
 
 					// this.data.headers = this.data.headers.map((a: any, i: number) => {
 					//   return {
@@ -2056,7 +2065,7 @@ class Store {
 	};
 
 	@action addEvent = async (form: any) => {
-		let { eventDate, ...rest } = form;
+		let { eventDate, dateOfNotification, ...rest } = form;
 		// let eventDate;
 		// const { ...rest } = form;
 
@@ -2247,7 +2256,7 @@ class Store {
 			notification.success({
 				message: "MCCOD record saved successfully!",
 				// description: "Your translation passed all validation checks!",
-				onClick: () => {},
+				onClick: () => { },
 				duration: 3,
 			});
 
@@ -2259,7 +2268,7 @@ class Store {
 			// Adding a fail message notification
 			notification.error({
 				message: "Failed to save MCCOD record",
-				onClick: () => {},
+				onClick: () => { },
 				duration: 3,
 			});
 		}
@@ -2410,8 +2419,42 @@ class Store {
 				},
 			};
 
+			const surnameColumn = {
+				key: 'Q7VM7swIWb6',
+				title: 'Surname',
+				dataIndex: 'dataValues',
+				render: (values: any) => {
+					const dv = values.find((dv) => dv.dataElement == "Q7VM7swIWb6");
+					return dv?.value;
+				},
+			};
+
+			const givenNameColumn = {
+				key: 'QmcOqkcNTip',
+				title: 'Given Names',
+				dataIndex: 'dataValues',
+				render: (values: any) => {
+					const dv = values.find((dv) => dv.dataElement == "QmcOqkcNTip");
+					const fullname = values.find((dv) => dv.dataElement == "ZYKmQ9GPOaF")?.value;
+					if (!!fullname) {
+						return fullname;
+					}
+					return dv?.value;
+				},
+			};
+
+			const otherNameColumn = {
+				key: 'tuGPnGHWqQn',
+				title: 'Other Name',
+				dataIndex: 'dataValues',
+				render: (values: any) => {
+					const dv = values.find((dv) => dv.dataElement == "tuGPnGHWqQn");
+					return dv?.value;
+				},
+			};
+
 			const otherColumns = this.availableDataElements
-				.filter((de: any) => de.selected)
+				.filter((de: any) => de.selected && !['ZKBE8Xm9DJG', 'Q7VM7swIWb6', 'QmcOqkcNTip', 'tuGPnGHWqQn'].includes(de.id))
 				.map((col: any) => {
 					return {
 						key: col.id,
@@ -2425,7 +2468,7 @@ class Store {
 					};
 				});
 
-			return [caseNumberColumn, ...otherColumns];
+			return [caseNumberColumn, surnameColumn, givenNameColumn, otherNameColumn, ...otherColumns];
 		}
 		return [];
 	}
