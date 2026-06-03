@@ -817,9 +817,17 @@ class Store {
 				return !!o.code;
 			})
 			.forEach((optionSet: any) => {
-				const options = optionSet.options.map((opt) =>
-					dataOptions.find((o) => o.id == opt.id)
-				);
+				const options = optionSet.options.map((opt) => {
+					// Find the matching option from dataOptions
+					const dataOption = dataOptions.find((o) => o.id == opt.id);
+					// Preserve the original code from the optionSet, use translated name if available
+					return {
+						...dataOption,
+						...opt,
+						code: opt.code || dataOption?.code, // Keep the original code, fallback to dataOption if missing
+						name: dataOption?.name || opt.name // Use translated name if available
+					};
+				});
 				this.optionSets[optionSet.code] = options;
 			});
 	};

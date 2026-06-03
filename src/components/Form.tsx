@@ -1090,6 +1090,16 @@ export const DataEntryForm = observer(() => {
             store.disableValue("v8mvHHXo06E");
         }
 
+        // If case number is prefixed with PERI or MATERNAL, set age to 0
+        if (changedValues.ZKBE8Xm9DJG) {
+            const caseNumber = changedValues.ZKBE8Xm9DJG;
+            if (caseNumber && (caseNumber.includes("PERI") || caseNumber.includes("MATERNAL"))) {
+                form.setFieldsValue({ q7e7FOXKnOf: 0 });
+                setPersonsAge(0);
+                store.disableValue("q7e7FOXKnOf");
+            }
+        }
+
 
         // if (changedValues.RbrUuKFSqkZ) {
         //     const dob = moment(changedValues.RbrUuKFSqkZ);
@@ -1530,19 +1540,22 @@ export const DataEntryForm = observer(() => {
                     disabled={
                         store.viewMode || store.allDisabled[field] || disabled
                     }
-                    key={optionalKey || `${Math.random()}`}
+                    key={optionalKey || field}
                     onChange={
-                        optionalFunction
-                            ? (e: any) => {
+                        (e: any) => {
+                            // Let rc-field-form update the state natively, then force validation clear
+                            setTimeout(() => {
+                                form.validateFields([field]).catch(() => {});
+                            }, 0);
+                            
+                            if (optionalFunction) {
                                 optionalFunction(e);
                             }
-                            : (e: any) => {
-                                return;
-                            }
+                        }
                     }
                 >
                     {options.filter(o => !!o).map((option: any) => (
-                        <Option key={option.code} value={option.code}>
+                        <Option key={option.code || option.id} value={option.code || option.name}>
                             {option.name}
                         </Option>
                     ))}
@@ -1661,8 +1674,8 @@ export const DataEntryForm = observer(() => {
             .join(',');
 
         const payload = {
-            sex: personsGender == "Male" ? "1"
-                : personsGender == "Female" ? "2"
+            sex: (personsGender == "Male" || personsGender == "SX01-01") ? "1"
+                : (personsGender == "Female" || personsGender == "SX01-02") ? "2"
                     : "9",
             // estimatedAge // Provided in ISO_8601 format https://en.wikipedia.org/wiki/ISO_8601#Durations.
             // E.g. P10YD 10 years, P9M 9 months, P5D 5 days, PT10H 10 hours, PT10M 10 minutes
@@ -1694,41 +1707,60 @@ export const DataEntryForm = observer(() => {
         const burl = "https://ug.sk-engine.online";
         // const burl = "https://hmis-dev.health.go.ug";
         const url = burl + "/icd/release/11/2024-01/doris?" + new URLSearchParams(payload);
-        const res = await fetch(url, {
-            // body: JSON.stringify(payload),
-            method: 'GET',
-            headers: {
-                "Content-Type": "application/json",
-                "API-Version": "v2",
-                "Accept-Language": "en",
-            }
-        }).then((response) => response.json());
-
-        const nameres = await fetch(
-            res.uri.replace("http://id.who.int", "https://ug.sk-engine.cloud/icd-api"),
-            {
+        
+        try {
+            const res = await fetch(url, {
+                // body: JSON.stringify(payload),
                 method: 'GET',
                 headers: {
                     "Content-Type": "application/json",
                     "API-Version": "v2",
                     "Accept-Language": "en",
                 }
-            }).then((response) => response.json());
+            }).then((response) => {
+                if (!response.ok) throw new Error("Doris API failed with status " + response.status);
+                return response.json();
+            });
 
+            const nameres = await fetch(
+                res.uri.replace("http://id.who.int", "https://ug.sk-engine.cloud/icd-api"),
+                {
+                    method: 'GET',
+                    headers: {
+                        "Content-Type": "application/json",
+                        "API-Version": "v2",
+                        "Accept-Language": "en",
+                    }
+                }).then((response) => {
+                    if (!response.ok) throw new Error("ICD API failed with status " + response.status);
+                    return response.json();
+                });
 
-        console.log("resd", res);
-        form.setFieldsValue({
-            tKezaEs8Ez5: nameres?.title["@value"],
-            LAvyxs29laJ: res.code,
-            mQVAyOLbga1: nameres?.title["@value"],  //for Final Underlying Cause
-            n2mScmFMovq: res.code    //for Final Underlying Cause
+            console.log("resd", res);
+            form.setFieldsValue({
+                tKezaEs8Ez5: nameres?.title["@value"],
+                LAvyxs29laJ: res.code,
+                mQVAyOLbga1: nameres?.title["@value"],  //for Final Underlying Cause
+                n2mScmFMovq: res.code    //for Final Underlying Cause
 
-        })
-        setDorisValue({
-            code: res.code,
-            text: nameres?.title["@value"]
-        });
-        setDorisReport(res.report);
+            })
+            setDorisValue({
+                code: res.code,
+                text: nameres?.title["@value"]
+            });
+            
+            let reportText = res.report;
+            if (!reportText && (res.error || res.warning)) {
+                reportText = [
+                    res.error ? `Error: ${res.error}` : "",
+                    res.warning ? `Warning: ${res.warning}` : ""
+                ].filter(Boolean).join("\n\n");
+            }
+            setDorisReport(reportText || "No computation report available.");
+        } catch (error) {
+            console.error("Failed to fetch Doris fields:", error);
+            // Optionally clear or set error state if needed
+        }
     }
 
     const addDiseaseTitle = (val: string) => {
@@ -3732,15 +3764,14 @@ export const DataEntryForm = observer(() => {
                                             name="Ylht9kCLSRW"
                                             className="m-0"
                                         >
-                                            {optionSet("TI01", "Ylht9kCLSRW")}
-                                            {/* <Select placeholder="Select an option">
-												<Option value="Minutes">Minutes</Option>
-												<Option value="Hours">Hours</Option>
-												<Option value="Days">Days</Option>
-												<Option value="Weeks">Weeks</Option>
-												<Option value="Months">Months</Option>
-												<Option value="Years">Years</Option>
-											</Select> */}
+                                            <Select size="large" placeholder="Select an option" disabled={store.viewMode || store.allDisabled.Ylht9kCLSRW}>
+                                                <Option value="Minutes">{tr("Minutes")}</Option>
+                                                <Option value="Hours">{tr("Hours")}</Option>
+                                                <Option value="Days">{tr("Days")}</Option>
+                                                <Option value="Weeks">{tr("Weeks")}</Option>
+                                                <Option value="Months">{tr("Months")}</Option>
+                                                <Option value="Years">{tr("Years")}</Option>
+                                            </Select>
                                         </Form.Item>
                                     ) : null}
                                 </td>
@@ -3912,7 +3943,14 @@ export const DataEntryForm = observer(() => {
                                             name="myydnkmLfhp"
                                             className="m-0"
                                         >
-                                            {optionSet("TI01", "myydnkmLfhp")}
+                                            <Select size="large" placeholder="Select an option" disabled={store.viewMode || store.allDisabled.myydnkmLfhp}>
+                                                <Option value="Minutes">{tr("Minutes")}</Option>
+                                                <Option value="Hours">{tr("Hours")}</Option>
+                                                <Option value="Days">{tr("Days")}</Option>
+                                                <Option value="Weeks">{tr("Weeks")}</Option>
+                                                <Option value="Months">{tr("Months")}</Option>
+                                                <Option value="Years">{tr("Years")}</Option>
+                                            </Select>
                                             {/* <Select placeholder="Select an option">
 												<Option value="Minutes">Minutes</Option>
 												<Option value="Hours">Hours</Option>
@@ -4083,7 +4121,14 @@ export const DataEntryForm = observer(() => {
                                             name="aC64sB86ThG"
                                             className="m-0"
                                         >
-                                            {optionSet("TI01", "aC64sB86ThG")}
+                                            <Select size="large" placeholder="Select an option" disabled={store.viewMode || store.allDisabled.aC64sB86ThG}>
+                                                <Option value="Minutes">{tr("Minutes")}</Option>
+                                                <Option value="Hours">{tr("Hours")}</Option>
+                                                <Option value="Days">{tr("Days")}</Option>
+                                                <Option value="Weeks">{tr("Weeks")}</Option>
+                                                <Option value="Months">{tr("Months")}</Option>
+                                                <Option value="Years">{tr("Years")}</Option>
+                                            </Select>
                                             {/* <Select placeholder="Select an option">
 												<Option value="Minutes">Minutes</Option>
 												<Option value="Hours">Hours</Option>
@@ -4253,7 +4298,14 @@ export const DataEntryForm = observer(() => {
                                             name="cmZrrHfTxW3"
                                             className="m-0"
                                         >
-                                            {optionSet("TI01", "cmZrrHfTxW3")}
+                                            <Select size="large" placeholder="Select an option" disabled={store.viewMode || store.allDisabled.cmZrrHfTxW3}>
+                                                <Option value="Minutes">{tr("Minutes")}</Option>
+                                                <Option value="Hours">{tr("Hours")}</Option>
+                                                <Option value="Days">{tr("Days")}</Option>
+                                                <Option value="Weeks">{tr("Weeks")}</Option>
+                                                <Option value="Months">{tr("Months")}</Option>
+                                                <Option value="Years">{tr("Years")}</Option>
+                                            </Select>
                                             {/* <Select placeholder="Select an option">
 												<Option value="Minutes">Minutes</Option>
 												<Option value="Hours">Hours</Option>
