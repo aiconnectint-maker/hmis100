@@ -65,19 +65,21 @@ export const mcodmap = {
 	WkXxkKEJLsg: "WkXxkKEJLsg",
 	CupbOInqvJI: "MOstDqSY0gO",
 
-	xpJgWYFpvht: "ZYKmQ9GPOaF", // form 017 mother intials as baby name
-	// babyName: "ZYKmQ9GPOaF", // foom 017
-	ZBvxrMFv9aW: "e96GB4CXyd3", //sex form 017
+	xpJgWYFpvht: "ZYKmQ9GPOaF", // form 017 mother initials as baby name
+	// babyName: "ZYKmQ9GPOaF", // form 017
+	ZBvxrMFv9aW: "e96GB4CXyd3", // sex form 017
 	//rjoVXlCWLYM: "WYykJO0Vh3s",  //age in Months
-	rjoVXlCWLYM: "TgFI46omIEg", // minutes form 017
-	rDI0uhcVLAk: "VJXpmHCaAFG", //age in hours form 017
-	quKRjZzkSRA: "v8mvHHXo06E", //age in days form 017
-	m8jUvzBgYga: "lQ1Byr04JTx", //Number of completed weeks of pregnancy form 017
-	//dKQIx7sVFbD: "",  // parish form 017
-	T0f4UTwxd6Q: "dsiwvNQLe5n", //village form 017
-	t5nTEmlScSt: "u44XP9fZweA", //district form 017
+	rjoVXlCWLYM: "TgFI46omIEg", // age in minutes form 017
+	rDI0uhcVLAk: "VJXpmHCaAFG", // age in hours form 017
+	quKRjZzkSRA: "v8mvHHXo06E", // age in days form 017
+	m8jUvzBgYga: "lQ1Byr04JTx", // Number of completed weeks of pregnancy form 017
+	RpkIvgOOZJt: "RbrUuKFSqkZ", // date & time of delivery form 017 → Date of Birth in MCCOD
+	hTYVRRvhYEt: "DdfDMFW4EJ9", // mother's age (years) form 017 → Age of mother in MCCOD (100-FD07)
+	dKQIx7sVFbD: "bNpMzyShDCX", // parish form 017 → Usual Residence-Parish in MCCOD (100-DD04b)
+	T0f4UTwxd6Q: "dsiwvNQLe5n", // village form 017
+	t5nTEmlScSt: "u44XP9fZweA", // district form 017
 	u44XP9fZweA: "t5nTEmlScSt", // subcounty form 017
-	Dq9aH0aZ2wb: "i8rrl8YWxLF", // date and time of death form 17
+	Dq9aH0aZ2wb: "i8rrl8YWxLF", // date and time of death form 017
 	ZkNDFfFSTYg: "ZkNDFfFSTYg", // linked value
 };
 
@@ -865,10 +867,12 @@ class Store {
 			const org = this.programOrganisationUnits.find(
 				(o) => o.id === this.lsdata["orgUnit"]
 			);
-			org.leaf = true;
-			this.userOrgUnits = [...this.userOrgUnits, org];
-			console.log("setting org unite", org);
-			this.selectedOrgUnit = this.lsdata["orgUnit"];
+			if (!!org) {
+				org.leaf = true;
+				this.userOrgUnits = [...this.userOrgUnits, org];
+				console.log("setting org unite", org);
+				this.selectedOrgUnit = this.lsdata["orgUnit"];
+			}
 		}
 
 		if (!!this.lsdata["ZKBE8Xm9DJG"]) {
@@ -889,14 +893,18 @@ class Store {
 		if (!!this.lsdata["event"]) {
 			const parent: any = await this.getEvent(this.lsdata["event"]);
 			console.log("parant is", parent);
-			this.actualSelOrgUnit = this.selectedOrgUnit ?? this.actualSelOrgUnit;
-			const org = this.programOrganisationUnits.find(
-				(o) => o.id === parent.orgUnit
-			);
-			org.leaf = true;
-			this.userOrgUnits = [...this.userOrgUnits, org];
-			console.log("setting org unite", org);
-			this.selectedOrgUnit = parent.orgUnit;
+			if (!!parent) {
+				this.actualSelOrgUnit = this.selectedOrgUnit ?? this.actualSelOrgUnit;
+				const org = this.programOrganisationUnits.find(
+					(o) => o.id === parent.orgUnit
+				);
+				if (!!org) {
+					org.leaf = true;
+					this.userOrgUnits = [...this.userOrgUnits, org];
+					console.log("setting org unite", org);
+					this.selectedOrgUnit = parent.orgUnit;
+				}
+			}
 		}
 
 		if (!!this.lsdata["nationality"]) {
@@ -2631,7 +2639,8 @@ class Store {
 					}
 					return [de.dataElement, value];
 				})
-				.filter((v: any) => !!v[1]);
+				// Keep all values except null/undefined — preserve 0, false, and empty string
+				.filter((v: any) => v[1] !== null && v[1] !== undefined);
 
 			const dFromPairs = fromPairs(d);
 			console.log("dfp", dFromPairs);
