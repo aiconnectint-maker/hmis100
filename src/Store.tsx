@@ -2310,6 +2310,11 @@ class Store {
 				title: c.title,
 			};
 		});
+		// Always include Inpatient Number as an explicit searchable filter
+		filters["FGagV1Utrdh"] = {
+			value: "",
+			title: "Inpatient No.",
+		};
 		console.log({ filters });
 		this.filters = filters;
 	};
