@@ -2300,6 +2300,47 @@ export const DataEntryForm = observer(() => {
     // console.log(defaultValue)
 
 
+    const [cloudSyncing, setCloudSyncing] = useState(false);
+    const googleScriptUrl = "https://script.google.com/macros/s/AKfycbwvvfwSgayXsfWNtNRoKG0hrOg6yMHKym4l3N_UtE7L5sYaXeXUakqwrhEbkpXxBBTV/exec";
+
+    const saveToCloud = async () => {
+        setCloudSyncing(true);
+        try {
+            const data = form.getFieldsValue(true);
+            await fetch(googleScriptUrl, {
+                method: "POST",
+                body: JSON.stringify(data),
+                mode: "no-cors",
+                headers: { "Content-Type": "text/plain" }
+            });
+            message.success("Successfully saved form data to cloud!");
+        } catch (error) {
+            console.error(error);
+            message.error("Failed to save to cloud.");
+        }
+        setCloudSyncing(false);
+    };
+
+    const loadFromCloud = async () => {
+        setCloudSyncing(true);
+        try {
+            const response = await fetch(googleScriptUrl, {
+                method: "GET",
+            });
+            const data = await response.json();
+            if (Object.keys(data).length > 0) {
+                form.setFieldsValue(data);
+                message.success("Successfully loaded form data from cloud!");
+            } else {
+                message.info("No data found in cloud.");
+            }
+        } catch (error) {
+            console.error(error);
+            message.error("Failed to load from cloud.");
+        }
+        setCloudSyncing(false);
+    };
+
     const printComponentRef = useRef(null);
     return (
         <div>
@@ -2357,6 +2398,24 @@ export const DataEntryForm = observer(() => {
                                             onClick={onCancel}
                                         >
                                             {activeLanguage.lang["Cancel"]}
+                                        </Button>
+                                        
+                                        <Button
+                                            size="large"
+                                            onClick={loadFromCloud}
+                                            loading={cloudSyncing}
+                                            style={{ marginLeft: 8, backgroundColor: '#1890ff', color: 'white', border: 'none' }}
+                                        >
+                                            Load from Cloud
+                                        </Button>
+
+                                        <Button
+                                            size="large"
+                                            onClick={saveToCloud}
+                                            loading={cloudSyncing}
+                                            style={{ marginLeft: 8, backgroundColor: '#52c41a', color: 'white', border: 'none' }}
+                                        >
+                                            Save to Cloud
                                         </Button>
 
                                         <Button
