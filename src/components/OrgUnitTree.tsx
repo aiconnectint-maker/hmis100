@@ -29,7 +29,11 @@ interface OrgUnitTreeTypes {
 
 const { RangePicker } = DatePicker;
 
-const defaultRange: any = [moment().subtract(2, "months"), moment(), moment().subtract(4, "months")];
+const defaultRange: any = [
+   moment().startOf("year"),
+   moment(),
+   moment().startOf("year").clone().subtract(moment().diff(moment().startOf("year"), "days"), "days")
+];
 
 export const OrgUnitTree: FunctionComponent<OrgUnitTreeTypes> = observer(({ loading, fetching }) => {
    const [categoryOptionCombos, setCategoryOptionCombos] = useState([]);
@@ -135,122 +139,123 @@ export const OrgUnitTree: FunctionComponent<OrgUnitTreeTypes> = observer(({ load
 
    return (
       <Spin spinning={loading}>
-         <div className="flex" style={{ alignItems: "flex-start" }}>
-            <div className="w-5/12 pr-1">
-               <TreeSelect
-                  showSearch
-                  allowClear={true}
-                  treeDataSimpleMode
-                  size="large"
-                  style={{ width: "100%" }}
-                  treeNodeFilterProp="title"
-                  disabled={!!store.selectedLevel}
-                  value={store.selectedOrgUnit}
-                  dropdownStyle={{ maxHeight: 400, overflow: "auto" }}
-                  placeholder={activeLanguage?.lang["Please select health centre"]}
-                  onChange={store.setSelectedOrgUnit}
-                  //loadData={onLoadData}
-                  treeData={units}
-               />
-            </div>
-            <div className="w-5/12 pl-1">
-               <Select
-                  style={{ width: "100%" }}
-                  allowClear={true}
-                  placeholder={activeLanguage?.lang["Nationality"]}
-                  onChange={store.setSelectedNationality}
-                  disabled={store.isIframeEdit}
-                  size="large"
-                  value={store.selectedNationality}
-               >
-                  {categoryOptionCombos.map((p: any) => (
-                     <Option value={p.id} key={p.id}>
-                        {p.name}
-                     </Option>
-                  ))}
-               </Select>
-            </div>
-            <Popover
-               placement="bottomRight"
-               title="Organisation Units Missing"
-               content="Please contact your administrator to assign the form to the organisation unit you selected."
-               visible={showWarn}
-            >
-               <div className="w-2/12 p-2 text-right" onMouseEnter={checkIfWarnApplies} onMouseLeave={handleWarnClose}>
-                  <Button
+         <div className="top-controls-card">
+            <div className="flex" style={{ alignItems: "flex-start" }}>
+               <div className="w-5/12 pr-1">
+                  <TreeSelect
+                     showSearch
+                     allowClear={true}
+                     treeDataSimpleMode
                      size="large"
-                     onClick={store.viewMode ? store.editEvent : store.showForm}
-                     disabled={!store.canInsert || store.forceDisable}
+                     style={{ width: "100%" }}
+                     treeNodeFilterProp="title"
+                     disabled={!!store.selectedLevel}
+                     value={store.selectedOrgUnit}
+                     dropdownStyle={{ maxHeight: 400, overflow: "auto" }}
+                     placeholder={activeLanguage?.lang["Please select health centre"]}
+                     onChange={store.setSelectedOrgUnit}
+                     //loadData={onLoadData}
+                     treeData={units}
+                  />
+               </div>
+               <div className="w-5/12 pl-1">
+                  <Select
+                     style={{ width: "100%" }}
+                     allowClear={true}
+                     placeholder={activeLanguage?.lang["Nationality"]}
+                     onChange={store.setSelectedNationality}
+                     disabled={store.isIframeEdit}
+                     size="large"
+                     value={store.selectedNationality}
                   >
-                     {store.viewMode ? activeLanguage?.lang["Edit Event"] : activeLanguage?.lang["Add Event"]}
-                  </Button>
+                     {categoryOptionCombos.map((p: any) => (
+                        <Option value={p.id} key={p.id}>
+                           {p.name}
+                        </Option>
+                     ))}
+                  </Select>
                </div>
-            </Popover>
+               <Popover
+                  placement="bottomRight"
+                  title="Organisation Units Missing"
+                  content="Please contact your administrator to assign the form to the organisation unit you selected."
+                  visible={showWarn}
+               >
+                  <div className="w-2/12 p-2 text-right" onMouseEnter={checkIfWarnApplies} onMouseLeave={handleWarnClose}>
+                     <Button
+                        size="large"
+                        onClick={store.viewMode ? store.editEvent : store.showForm}
+                        disabled={!store.canInsert || store.forceDisable}
+                     >
+                        {store.viewMode ? activeLanguage?.lang["Edit Event"] : activeLanguage?.lang["Add Event"]}
+                     </Button>
+                  </div>
+               </Popover>
 
-            <Popover
-               placement="bottomRight"
-               title="Insufficient Permissions"
-               content="Please contact your administrator to change the api settings for you."
-               visible={showApiWarn}
-            >
-               <div
-                  className="w-2/12 p-2 text-right"
-                  onMouseEnter={checkIfApiWarnApplies}
-                  onMouseLeave={handleApiWarnClose}
+               <Popover
+                  placement="bottomRight"
+                  title="Insufficient Permissions"
+                  content="Please contact your administrator to change the api settings for you."
+                  visible={showApiWarn}
                >
-                  <Button size="large" onClick={store.showApi} disabled={!userIsAuthorized}>
-                     {activeLanguage?.lang["API"] ?? "API"}
-                  </Button>
-               </div>
-            </Popover>
+                  <div
+                     className="w-2/12 p-2 text-right"
+                     onMouseEnter={checkIfApiWarnApplies}
+                     onMouseLeave={handleApiWarnClose}
+                  >
+                     <Button size="large" onClick={store.showApi} disabled={!userIsAuthorized}>
+                        {activeLanguage?.lang["API"] ?? "API"}
+                     </Button>
+                  </div>
+               </Popover>
 
-            <Popover
-               placement="bottomRight"
-               title="Insufficient Permissions"
-               content="Please contact your administrator to change the active language for you."
-               visible={showLangWarn}
-            >
-               <div
-                  className="w-2/12 p-2 text-right"
-                  onMouseEnter={checkIfLangWarnApplies}
-                  onMouseLeave={handleLangWarnClose}
+               <Popover
+                  placement="bottomRight"
+                  title="Insufficient Permissions"
+                  content="Please contact your administrator to change the active language for you."
+                  visible={showLangWarn}
                >
-                  <Button size="large" onClick={showLangConfig} disabled={!userIsAuthorized}>
-                     {activeLanguage?.lang["Change Language"]}
-                  </Button>
+                  <div
+                     className="w-2/12 p-2 text-right"
+                     onMouseEnter={checkIfLangWarnApplies}
+                     onMouseLeave={handleLangWarnClose}
+                  >
+                     <Button size="large" onClick={showLangConfig} disabled={!userIsAuthorized}>
+                        {activeLanguage?.lang["Change Language"]}
+                     </Button>
+                  </div>
+               </Popover>
+            </div>
+            <div className="flex mt-2" style={{  width: "100%", justifyContent: "flex-end", marginBottom: "-5px" }}>
+               <div className="flex" style={{  }}>
+               <div style={{ width: "40%", paddingRight: "6px" }}>
+                  <Select
+                     style={{ width: "100%" }}
+                     allowClear={true}
+                     disabled={!!store.selectedOrgUnit}
+                     placeholder={activeLanguage?.lang["Level"] ?? "Level"}
+                     onChange={store.setSelectedLevel}
+                     size="large"
+                     value={store.selectedLevel}
+                  >
+                     <Option value={1}>Level 1</Option>
+                     <Option value={2}>Level 2</Option>
+                     <Option value={3}>Level 3</Option>
+                     <Option value={4}>Level 4</Option>
+                     <Option value={5}>Level 5</Option>
+                  </Select>
                </div>
-            </Popover>
-         </div>
-         <div className="flex mt-2" style={{  width: "100%", justifyContent: "flex-end", marginBottom: "-5px" }}>
-            <div className="flex" style={{  }}>
-            <div style={{ width: "40%", paddingRight: "6px" }}>
-               <Select
-                  style={{ width: "100%" }}
-                  allowClear={true}
-                  disabled={!!store.selectedOrgUnit}
-                  placeholder={activeLanguage?.lang["Level"] ?? "Level"}
-                  onChange={store.setSelectedLevel}
-                  size="large"
-                  value={store.selectedLevel}
-               >
-                  <Option value={1}>Level 1</Option>
-                  <Option value={2}>Level 2</Option>
-                  <Option value={3}>Level 3</Option>
-                  <Option value={4}>Level 4</Option>
-                  <Option value={5}>Level 5</Option>
-               </Select>
+               <div style={{ width: "60%", paddingLeft: "6px" }}>
+                  <RangePicker
+                     style={{ width: "100%" }}
+                     defaultValue={defaultRange}
+                     onChange={handleSelect}
+                     format="YYYY-MM-DD"
+                     size="large"
+                  />
+               </div>
+               </div>
             </div>
-            <div style={{ width: "60%", paddingLeft: "6px" }}>
-               <RangePicker
-                  style={{ width: "100%" }}
-                  defaultValue={defaultRange}
-                  onChange={handleSelect}
-                  format="YYYY-MM-DD"
-                  size="large"
-               />
-            </div>
-            </div>
-           
          </div>
       </Spin>
    );

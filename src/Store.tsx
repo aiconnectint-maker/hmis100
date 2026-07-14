@@ -810,7 +810,7 @@ class Store {
 
 		console.log("cates", lcategories);
 
-		this.nationalitySelect = lcategories || [];
+		this.nationalitySelect = (lcategories || []).filter((c: any) => c && c.id);
 	};
 
 	@action setOptionSets = (optionSets, dataOptions) => {
@@ -1481,9 +1481,8 @@ class Store {
 
 				console.log(this.selectedDateRange);
 
-				for (let i = 0; i < this.nationalitySelect?.length; i++) {
-					const id = this.nationalitySelect[i].id;
-					query1[`event_${id}`] = {
+				if (!this.nationalitySelect || this.nationalitySelect.length === 0) {
+					query1["events"] = {
 						resource: "events/query.json",
 						params: {
 							paging: "false",
@@ -1494,7 +1493,6 @@ class Store {
 							}),
 							totalPages: "true",
 							attributeCc: this.attributeCC,
-							attributeCos: id,
 							includeAllDataElements: "true",
 							order: this.sorter,
 							...(this.selectedDateRange && {
@@ -1505,10 +1503,42 @@ class Store {
 					};
 
 					if (!!this.selectedDateRange) {
-						// query2[`event_${id}`] = Object.assign({}, query1[`event_${id}`]);
-						// query2[`event_${id}`].params.startDate = this.selectedDateRange[2];
-						// query2[`event_${id}`].params.endDate = this.selectedDateRange[0];
-						query2[`event_${id}`] = {
+						query2["events"] = {
+							resource: "events/query.json",
+							params: {
+								paging: "false",
+								programStage: this.programStage,
+								...(this.selectedOrgUnit && {
+									orgUnit: this.selectedOrgUnit,
+									ouMode: "DESCENDANTS",
+								}),
+								totalPages: "true",
+								attributeCc: this.attributeCC,
+								includeAllDataElements: "true",
+								order: this.sorter,
+								...(this.selectedDateRange && {
+									startDate: this.selectedDateRange[2],
+									endDate: this.selectedDateRange[0],
+								}),
+							},
+						};
+					}
+
+					console.log("Query all events", query1);
+					const res = await this.engine.query(query1);
+					console.log("Result all events", res);
+					data = res.events;
+
+					if (!!this.selectedDateRange) {
+						console.log("Query2 all events", query2);
+						const res2 = await this.engine.query(query2);
+						console.log("Result2 all events", res2);
+						prevData = res2.events;
+					}
+				} else {
+					for (let i = 0; i < this.nationalitySelect.length; i++) {
+						const id = this.nationalitySelect[i].id;
+						query1[`event_${id}`] = {
 							resource: "events/query.json",
 							params: {
 								paging: "false",
@@ -1523,36 +1553,65 @@ class Store {
 								includeAllDataElements: "true",
 								order: this.sorter,
 								...(this.selectedDateRange && {
-									startDate: this.selectedDateRange[2],
-									endDate: this.selectedDateRange[0],
+									startDate: this.selectedDateRange[0],
+									endDate: this.selectedDateRange[1],
 								}),
 							},
 						};
-					}
-				}
 
-				console.log("Query", query1);
-				const res = await this.engine.query(query1);
-				console.log("Result", res);
-				for (let i = 0; i < this.nationalitySelect?.length; i++) {
-					const id = this.nationalitySelect[i].id;
-					if (i == 0) {
-						data = res[`event_${id}`];
-					} else {
-						data.rows?.concat(res[`event_${id}`].rows);
+						if (!!this.selectedDateRange) {
+							query2[`event_${id}`] = {
+								resource: "events/query.json",
+								params: {
+									paging: "false",
+									programStage: this.programStage,
+									...(this.selectedOrgUnit && {
+										orgUnit: this.selectedOrgUnit,
+										ouMode: "DESCENDANTS",
+									}),
+									totalPages: "true",
+									attributeCc: this.attributeCC,
+									attributeCos: id,
+									includeAllDataElements: "true",
+									order: this.sorter,
+									...(this.selectedDateRange && {
+										startDate: this.selectedDateRange[2],
+										endDate: this.selectedDateRange[0],
+									}),
+								},
+							};
+						}
 					}
-				}
 
-				if (!!this.selectedDateRange) {
-					console.log("Query2", query2);
-					const res2 = await this.engine.query(query2);
-					console.log("Result2", res2);
-					for (let i = 0; i < this.nationalitySelect?.length; i++) {
+					console.log("Query", query1);
+					const res = await this.engine.query(query1);
+					console.log("Result", res);
+					for (let i = 0; i < this.nationalitySelect.length; i++) {
 						const id = this.nationalitySelect[i].id;
 						if (i == 0) {
-							prevData = res2[`event_${id}`];
-						} else {
-							prevData.rows?.concat(res2[`event_${id}`].rows);
+							data = res[`event_${id}`];
+						} else if (res[`event_${id}`]) {
+							data = {
+								...data,
+								rows: data.rows ? data.rows.concat(res[`event_${id}`].rows || []) : (res[`event_${id}`].rows || [])
+							};
+						}
+					}
+
+					if (!!this.selectedDateRange) {
+						console.log("Query2", query2);
+						const res2 = await this.engine.query(query2);
+						console.log("Result2", res2);
+						for (let i = 0; i < this.nationalitySelect.length; i++) {
+							const id = this.nationalitySelect[i].id;
+							if (i == 0) {
+								prevData = res2[`event_${id}`];
+							} else if (res2[`event_${id}`]) {
+								prevData = {
+									...prevData,
+									rows: prevData.rows ? prevData.rows.concat(res2[`event_${id}`].rows || []) : (res2[`event_${id}`].rows || [])
+								};
+							}
 						}
 					}
 				}
@@ -1678,7 +1737,7 @@ class Store {
 					orgUnitIndex,
 				} = getHeaderIndexes(headers);
 
-				for (var i = 0; i < prevData.rows.length; i++) {
+				for (let i = 0; i < prevData.rows.length; i++) {
 					const name: string = rows[i][codIndex];
 					const code: string = rows[i][causeOfDeathIndex];
 					const dob: string = rows[i][birthIndex];
@@ -1727,7 +1786,7 @@ class Store {
 					orgUnitIndex,
 				} = getHeaderIndexes(headers);
 
-				for (var i = 0; i < rows.length; i++) {
+				for (let i = 0; i < rows.length; i++) {
 					const name: string = rows[i][codIndex];
 					const code: string = rows[i][causeOfDeathIndex];
 					const dob: string = rows[i][birthIndex];

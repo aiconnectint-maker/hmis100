@@ -1,10 +1,332 @@
-*,
-*::before,
-*::after {
-  border-width: 0;
-  border-style: solid;
-  border-color: #e2e8f0;
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+
+/* Global variables and custom resets */
+:root {
+  --primary-color: #3b82f6;
+  --primary-hover: #2563eb;
+  --primary-bg: #eff6ff;
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+  --bg-gradient: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  --card-bg: rgba(255, 255, 255, 0.85);
+  --border-radius: 12px;
+  --border-color: rgba(226, 232, 240, 0.8);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.02);
+  --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.05), 0 2px 4px -1px rgba(15, 23, 42, 0.03);
+  --shadow-lg: 0 10px 25px -5px rgba(15, 23, 42, 0.04), 0 8px 10px -6px rgba(15, 23, 42, 0.04);
 }
+
+/* Modern Typography & Background Overrides */
+body {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  background: var(--bg-gradient) !important;
+  min-height: 100vh;
+  color: var(--text-main) !important;
+  padding: 20px !important;
+}
+
+/* Top bar styled layout container */
+.top-controls-card {
+  background: #ffffff !important;
+  border-radius: 16px !important;
+  border: 1px solid var(--border-color) !important;
+  box-shadow: var(--shadow-sm) !important;
+  padding: 20px !important;
+  margin-bottom: 24px !important;
+  transition: box-shadow 0.3s ease;
+}
+
+.top-controls-card:hover {
+  box-shadow: var(--shadow-md) !important;
+}
+
+/* Antd Select and TreeSelect Overrides */
+.ant-select-single .ant-select-selector,
+.ant-tree-select .ant-select-selector {
+  border-radius: 10px !important;
+  border: 1px solid #cbd5e1 !important;
+  font-family: inherit !important;
+  transition: all 0.2s ease !important;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.02) !important;
+}
+
+.ant-select-single .ant-select-selector:hover,
+.ant-tree-select .ant-select-selector:hover {
+  border-color: var(--primary-color) !important;
+}
+
+.ant-select-focused .ant-select-selector {
+  border-color: var(--primary-color) !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15) !important;
+}
+
+.ant-select-selection-placeholder {
+  color: var(--text-muted) !important;
+}
+
+/* Custom Buttons Overrides */
+.ant-btn {
+  border-radius: 10px !important;
+  font-weight: 500 !important;
+  font-family: inherit !important;
+  height: auto !important;
+  padding: 8px 16px !important;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  box-shadow: var(--shadow-sm) !important;
+  border: 1px solid #cbd5e1 !important;
+}
+
+.ant-btn:hover {
+  border-color: var(--primary-color) !important;
+  color: var(--primary-color) !important;
+  transform: translateY(-1px);
+}
+
+.ant-btn:active {
+  transform: translateY(0);
+}
+
+.ant-btn-primary {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+  border: none !important;
+  color: white !important;
+}
+
+.ant-btn-primary:hover, .ant-btn-primary:focus {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
+  color: white !important;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2) !important;
+}
+
+.ant-btn-danger {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+  border: none !important;
+  color: white !important;
+}
+
+.ant-btn-danger:hover {
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%) !important;
+  color: white !important;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2) !important;
+}
+
+/* Modern DatePicker overrides */
+.ant-picker {
+  border-radius: 10px !important;
+  border-color: #cbd5e1 !important;
+  padding: 8px 12px !important;
+  transition: all 0.2s ease !important;
+}
+
+.ant-picker:hover, .ant-picker-focused {
+  border-color: var(--primary-color) !important;
+}
+
+.ant-picker-focused {
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15) !important;
+}
+
+/* Tabs style modernisation */
+.ant-tabs-card > .ant-tabs-nav .ant-tabs-tab {
+  background: #f1f5f9 !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 10px 10px 0 0 !important;
+  margin-right: 4px !important;
+  font-weight: 500 !important;
+  color: var(--text-muted) !important;
+  padding: 8px 16px !important;
+  transition: all 0.2s ease !important;
+}
+
+.ant-tabs-card > .ant-tabs-nav .ant-tabs-tab-active {
+  background: #ffffff !important;
+  border-bottom-color: #ffffff !important;
+  color: var(--primary-color) !important;
+  font-weight: 600 !important;
+}
+
+/* Antd Card styled details */
+.ant-card {
+  background: var(--card-bg) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 16px !important;
+  border: 1px solid var(--border-color) !important;
+  box-shadow: var(--shadow-lg) !important;
+  overflow: hidden;
+  margin-bottom: 24px !important;
+}
+
+.ant-card-head {
+  border-bottom: 1px solid var(--border-color) !important;
+  background: transparent !important;
+  padding: 16px 24px !important;
+}
+
+.ant-card-head-title {
+  font-weight: 600 !important;
+  color: var(--text-main) !important;
+  font-size: 1.1rem !important;
+}
+
+/* Highcharts wrapper modern card */
+#topdiseaseswrapper {
+  position: relative;
+  width: 100%;
+  margin: 15px auto;
+  background: var(--card-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 16px !important;
+  border: 1px solid var(--border-color) !important;
+  box-shadow: var(--shadow-lg) !important;
+  padding: 24px 20px !important;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+#topdiseaseswrapper:hover {
+  box-shadow: 0 20px 30px -10px rgba(15, 23, 42, 0.06), 0 10px 15px -5px rgba(15, 23, 42, 0.04) !important;
+}
+
+#topdiseases {
+  padding-top: 45px;
+}
+
+/* Sleek placement of Select selectors inside charts */
+.chartOpts {
+  position: absolute;
+  top: 20px;
+  right: 24px;
+  display: flex !important;
+  gap: 10px !important;
+  align-items: center !important;
+  z-index: 10;
+}
+
+.chartOpts .ant-select-selector {
+  border-radius: 10px !important;
+  background: rgba(248, 250, 252, 0.9) !important;
+}
+
+/* Premium chart picker round buttons */
+.chartPicker {
+  display: flex;
+}
+
+.chartPicker button {
+  width: 38px !important;
+  height: 38px !important;
+  border-radius: 50% !important;
+  border: 1px solid #e2e8f0 !important;
+  background: white !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 8px;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm) !important;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.chartPicker button:hover {
+  border-color: var(--primary-color) !important;
+  color: var(--primary-color) !important;
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(59, 130, 246, 0.15) !important;
+}
+
+.chartPicker button svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* Antd Table override for elegant list */
+.ant-table {
+  background: transparent !important;
+  font-family: inherit !important;
+}
+
+.ant-table-thead > tr > th {
+  background: #f8fafc !important;
+  color: var(--text-muted) !important;
+  font-weight: 600 !important;
+  border-bottom: 2px solid #e2e8f0 !important;
+  font-size: 0.8rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  padding: 14px 16px !important;
+}
+
+.ant-table-tbody > tr > td {
+  border-bottom: 1px solid #f1f5f9 !important;
+  color: #334155 !important;
+  padding: 12px 16px !important;
+  transition: background-color 0.2s ease !important;
+}
+
+.ant-table-tbody > tr:hover > td {
+  background: rgba(241, 245, 249, 0.5) !important;
+}
+
+/* Custom layout alignments */
+.flex {
+  display: flex !important;
+}
+
+.w-5\/12 {
+  width: 41.666667%;
+}
+
+.w-2\/12 {
+  width: 16.666667%;
+}
+
+.pl-1 {
+  padding-left: 4px;
+}
+
+.pr-1 {
+  padding-right: 4px;
+}
+
+.p-2 {
+  padding: 8px;
+}
+
+.mt-2 {
+  margin-top: 8px;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.l {
+  cursor: pointer;
+}
+
+/* Highcharts tooltip styles */
+.ptarrow {
+  color: black;
+  width: 16px;
+  height: 16px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 4px;
+}
+
+.ptlabel {
+  height: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.85rem;
+}
+
+/* Demo styles & alignments */
 #demo-link-docs {
   float: right;
 }
@@ -13,19 +335,11 @@
   margin-bottom: 50px;
   text-align: center;
 }
-#demo-selected {
-  float: right;
-  display: none;
-}
 .d-flex {
   display: flex;
 }
 .justify-content-end {
   justify-content: flex-end;
-}
-#demo-paste-selected {
-  background-color: #ff9;
-  padding: 5px;
 }
 .demo-instance {
   border: 1px solid #ccc;
@@ -36,11 +350,6 @@
 }
 .demo {
   margin-top: 20px;
-}
-.demo::after {
-  clear: both;
-  content: "";
-  display: block;
 }
 .demo-search {
   float: left;
@@ -59,20 +368,11 @@
 .ctw-window {
   background-color: #fff;
 }
-
 .p-1 {
   padding: 0.25rem;
 }
-
-.border-collapse {
-  border-collapse: collapse;
-}
-
 .w-full {
   width: 100%;
-}
-.mt-2 {
-  margin-top: 0.5rem;
 }
 .my-2 {
   margin-top: 0.5rem;
@@ -92,34 +392,11 @@
 .m-0 {
   margin: 0;
 }
-.flex {
-  display: -webkit-box;
-  display: flex;
-}
-.w-5\/12 {
-  width: 41.666667%;
-}
-.w-2\/12 {
-  width: 16.666667%;
-}
-.pl-1 {
-  padding-left: 0.25rem;
-}
-.text-right {
-  text-align: right;
-}
-.pr-1 {
-  padding-right: 0.25rem;
-}
-.p-2 {
-  padding: 0.5rem;
+.text-center {
+  text-align: center;
 }
 
-.l {
-  cursor: pointer;
-}
-
-/* Spinner animation */
+/* Spinner Animation */
 @keyframes spin {
   0% {
     transform: rotate(0deg);
@@ -131,69 +408,4 @@
 .spinner {
   animation: spin 3s infinite;
   animation-timing-function: cubic-bezier(0.68, -0.55, 0.265, 1.55);
-}
-
-#topdiseaseswrapper {
-  position: relative;
-  /*max-width: 1240px;*/
-  width: 100%;
-  margin: 15px auto;
-  border:  1px solid #b9a9a9;
-  padding: 15px 10px;
-}
-
-#topdiseases {
-  padding-top: 35px;
-}
-
-.chartOpts {
-  position: absolute;
-  top: 15px;
-  right: 45px;
-  display: flex;
-}
-.chartPicker {
-  display: flex;
-}
-.chartPicker button {
-  width: 40px;
-  height: 40px;
-  margin-left: 8px;
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.chart-date-range {
-  margin-left: 12px;
-  max-width: 220px;
-}
-
-.ptarrow {
-  color: black;
-  width: 24px;
-  height: 24px;
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.red-arr {
-  color:  red;
-}
-
-.green-arr {
-  color: green;
-}
-
-.ptlabel {
-  height: 24px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.text-center {
-  text-align: center;
 }

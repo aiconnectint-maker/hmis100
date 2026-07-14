@@ -1,0 +1,550 @@
+[
+    {
+        "code": "HMIS_100_  Ministry of Health National Ca_ucCZOBcE",
+        "name": "HMIS_100_  Ministry of Health National Case Number (Migrated)",
+        "id": "ZKBE8Xm9DJG"
+    },
+    {
+        "code": "100-DD01",
+        "name": "100-DD01. Full Name",
+        "id": "ZYKmQ9GPOaF"
+    },
+    {
+        "code": "100-DD02",
+        "name": "100-DD02. NIN",
+        "id": "MOstDqSY0gO"
+    },
+    {
+        "code": "100-DD04a",
+        "name": "100-DD04a. Usual Residence-Village",
+        "id": "zwKo51BEayZ"
+    },
+    {
+        "code": "100-DD04b",
+        "name": "100-DD04b. Usual Residence-Parish",
+        "id": "bNpMzyShDCX"
+    },
+    {
+        "code": "HMIS_100_  District_k8dOLgiW",
+        "name": "HMIS_100_  District (Migrated)",
+        "id": "u44XP9fZweA"
+    },
+    {
+        "code": "100-DD04d",
+        "name": "100-DD04d. Usual Residence-County",
+        "id": "b70okb06FWa"
+    },
+    {
+        "code": "HMIS_100_  Subcounty_k8dOLgiW",
+        "name": "HMIS_100_  Subcounty (Migrated)",
+        "id": "t5nTEmlScSt"
+    },
+    {
+        "code": "100-DD05",
+        "name": "100-DD05. Occupation",
+        "id": "dsiwvNQLe5n"
+    },
+    {
+        "code": "100-DD06",
+        "name": "100-DD06. Date of Birth",
+        "id": "RbrUuKFSqkZ"
+    },
+    {
+        "code": "100-DD07",
+        "name": "100-DD07. Age",
+        "id": "q7e7FOXKnOf"
+    },
+    {
+        "code": "100-DD08",
+        "name": "100-DD08. Sex",
+        "id": "e96GB4CXyd3"
+    },
+    {
+        "code": "100-DDO10",
+        "name": "100-DDO10. Date and time of Death",
+        "id": "i8rrl8YWxLF"
+    },
+    {
+        "code": "100-DDO9",
+        "name": "100-DDO9. Place of Death",
+        "id": "xNCSFrgdUgi"
+    },
+    {
+        "code": "100-DP01",
+        "name": "100-DP01. For women, was the deceased pregnant?",
+        "id": "zcn7acUB6x1"
+    },
+    {
+        "code": "100-DP02",
+        "name": "100-DP02. If yes, at what point in time was deceased pregnant?",
+        "id": "KpfvNQSsWIw"
+    },
+    {
+        "code": "100-DP03",
+        "name": "100-DP03. Did the pregnancy contribute to the death?",
+        "id": "AJAraEcfH63"
+    },
+    {
+        "code": "100-DP04",
+        "name": "100-DP04. Referred from (level of care)",
+        "id": "RJhbkjYrODG"
+    },
+    {
+        "code": "100-DP05",
+        "name": "100-DP05. Parity",
+        "id": "ymyLrfEcYkD"
+    },
+    {
+        "code": "100-DP06",
+        "name": "100-DP06. Mode of delivery",
+        "id": "K5BDPJQk1BP"
+    },
+    {
+        "code": "100-DP07",
+        "name": "100-DP07. Place of delivery",
+        "id": "Z41di0TRjIu"
+    },
+    {
+        "code": "100-DP08",
+        "name": "100-DP08. Delivered by skilled attendant",
+        "id": "uaxjt0inPNF"
+    },
+    {
+        "code": "100-FD01",
+        "name": "100-FD01. Multiple pregnancy",
+        "id": "V4rE1tsj5Rb"
+    },
+    {
+        "code": "100-FD02",
+        "name": "100-FD02. Stillborn?",
+        "id": "ivnHp4M4hFF"
+    },
+    {
+        "code": "100-FD03",
+        "name": "100-FD03. If death within 24h specify number of hours survived",
+        "id": "jf9TogeSZpk"
+    },
+    {
+        "code": "100-FD04",
+        "name": "100-FD04. Number of completed weeks of pregnancy",
+        "id": "lQ1Byr04JTx"
+    },
+    {
+        "code": "100-FD05",
+        "name": "100-FD05. If death was perinatal, please state conditions of mother that affected the fetus and newborn",
+        "id": "GFVhltTCG8b"
+    },
+    {
+        "code": "100-FD06",
+        "name": "100-FD06. Birth weight (in grams)",
+        "id": "xAWYJtQsg8M"
+    },
+    {
+        "code": "100-FD07",
+        "name": "100-FD07. Age of mother (years)",
+        "id": "DdfDMFW4EJ9"
+    },
+    {
+        "code": "HMIS_100_  Report disease or condition di_ucCZOBcE",
+        "name": "HMIS_100_  Report disease or condition directly leading to death-Cause of death_a (Migrated)",
+        "id": "sfpqAeqKeyQ"
+    },
+    {
+        "code": "020-100-MD01ba. Type_of_interval_for_a_ucCZOBcE",
+        "name": "020-100-MD01ba. Type_of_interval_for_a (Migrated)",
+        "id": "Ylht9kCLSRW"
+    },
+    {
+        "code": "HMIS_100_  Report chain of events -due to_ucCZOBcE",
+        "name": "HMIS_100_  Report chain of events -due to in order-Cause of death_b (Migrated)",
+        "id": "zb7uTuBCPrN"
+    },
+    {
+        "code": "HMIS_100_Report chain of events -due to_ucCZOBcE",
+        "name": "HMIS_100_Report chain of events -due to in order-Cause of death_c (Migrated)",
+        "id": "QGFYJK00ES7"
+    },
+    {
+        "code": "020-100-MD02a3. Report chain of events du_ucCZOBcE",
+        "name": "020-100-MD02a3. Report chain of events due to in order-Cause of death_d (Migrated)",
+        "id": "CnPGhOcERFF"
+    },
+    {
+        "code": "020-100-MD02b1a. Type_of_interval_for_b_ucCZOBcE",
+        "name": "020-100-MD02b1a. Type_of_interval_for_b (Migrated)",
+        "id": "myydnkmLfhp"
+    },
+    {
+        "code": "HMIS_100_Type_of_interval_for_c_ucCZOBcE",
+        "name": "HMIS_100_Type_of_interval_for_c (Migrated)",
+        "id": "aC64sB86ThG"
+    },
+    {
+        "code": "020-100-MD02b3a. Type_of_interval_for_d_ucCZOBcE",
+        "name": "020-100-MD02b3a. Type_of_interval_for_d (Migrated)",
+        "id": "cmZrrHfTxW3"
+    },
+    {
+        "code": "100-MD02",
+        "name": "100-MD02. Date of Injury If external cause or poisoning",
+        "id": "U18Tnfz9EKd"
+    },
+    {
+        "code": "020-100-MD03A",
+        "name": "020-100-MD03a. State the underlying cause",
+        "id": "QTKk2Xt8KDu"
+    },
+    {
+        "code": "100-MD03B",
+        "name": "100-MD03b. Please describe how external cause occurred (If poisoning please specify poisoning agent)",
+        "id": "DKlOhZJOCrX"
+    },
+    {
+        "code": "HIMS_10042_ucCZOBcE",
+        "name": "HMIS_100_  Other significant conditions contributing to death (time intervals can be included in brackets after the condition) (Migrated)",
+        "id": "xeE5TQLvucB"
+    },
+    {
+        "code": "100-MD01",
+        "name": "100-MD01. Manner of death (disease)",
+        "id": "FhHPxY16vet"
+    },
+    {
+        "code": "100-MD10B",
+        "name": "100-MD10b. Manner of death - Assault",
+        "id": "KsGOxFyzIs1"
+    },
+    {
+        "code": "100-MD10C",
+        "name": "100-MD10c. Manner of death - Accident",
+        "id": "gNM2Yhypydx"
+    },
+    {
+        "code": "100-MD10D",
+        "name": "100-MD10d. Manner of death -  Legal intervention",
+        "id": "tYH7drlbNya"
+    },
+    {
+        "code": "100-MD10E",
+        "name": "100-MD10e. Manner of death - Pending investigation",
+        "id": "fQWuywOaoN2"
+    },
+    {
+        "code": "100-OD01",
+        "name": "100-OD01. Was surgery performed within the last 4 weeks?",
+        "id": "Kk0hmrJPR90"
+    },
+    {
+        "code": "100-MD10F",
+        "name": "100-MD10f. Manner of death - Could not be determined",
+        "id": "b4yPk98om7e"
+    },
+    {
+        "code": "100-OD02",
+        "name": "100-OD02. If yes please specify date of surgery",
+        "id": "j5TIQx3gHyF"
+    },
+    {
+        "code": "100-MD10G",
+        "name": "100-MD10g. Manner of death -  Intentional self-harm",
+        "id": "wX3i3gkTG4m"
+    },
+    {
+        "code": "100-OD03",
+        "name": "100-OD03. If yes please specify reason for surgery (disease or condition)",
+        "id": "JhHwdQ337nn"
+    },
+    {
+        "code": "100-MD10H",
+        "name": "100-MD10h. Manner of death - War",
+        "id": "xDMX2CJ4Xw3"
+    },
+    {
+        "code": "100-MD10I",
+        "name": "100-MD10i. Manner of death - Unknown",
+        "id": "o1hG9vr0peF"
+    },
+    {
+        "code": "100-OD04",
+        "name": "100-OD04. Was an autopsy requested?",
+        "id": "jY3K6Bv4o9Q"
+    },
+    {
+        "code": "100-MD10J",
+        "name": "100-MD10j. Manner of death - external cause or poisoning",
+        "id": "AZSlwlRAFig"
+    },
+    {
+        "code": "100-OD05",
+        "name": "100-OD05. If yes were the findings used in the certification?",
+        "id": "UfG52s4YcUt"
+    },
+    {
+        "code": "100-PO01",
+        "name": "100-PO01. Place of occurrence of the external cause",
+        "id": "kGIDD5xIeLC"
+    },
+    {
+        "code": "100-PO02",
+        "name": "100-PO02. If Other place (please specify):",
+        "id": "mDez8j7furx"
+    },
+    {
+        "code": "HMIS_100_  Time interval_a_ucCZOBcE",
+        "name": "HMIS_100_  Time interval_a (Migrated)",
+        "id": "WkXxkKEJLsg"
+    },
+    {
+        "code": "HMIS_100_Time interval_b_ucCZOBcE",
+        "name": "HMIS_100_Time interval_b (Migrated)",
+        "id": "fleGy9CvHYh"
+    },
+    {
+        "code": "020-100-MD02b2b. HMIS_100_Time interval_c_ucCZOBcE",
+        "name": "020-100-MD02b2b. HMIS_100_Time interval_c (Migrated)",
+        "id": "hO8No9fHVd2"
+    },
+    {
+        "code": "HMIS_100_  Time interval_d_ucCZOBcE",
+        "name": "HMIS_100_  Time interval_d (Migrated)",
+        "id": "eCVDO6lt4go"
+    },
+    {
+        "code": "020-100-MD01A-Term",
+        "name": "020-100-MD01a. Report disease or condition directly leading to death-Cause of death-Term",
+        "id": "zD0E77W4rFs"
+    },
+    {
+        "code": "020-100-MD02A1-Term",
+        "name": "020-100-MD02a1. Report chain of events \u2018due to\u2019 in order-Cause of death-Term",
+        "id": "tuMMQsGtE69"
+    },
+    {
+        "code": "020-100-MD02A2-Term",
+        "name": "020-100-MD02a2. Report chain of events \u2018due to\u2019 in order-Cause of death-Term",
+        "id": "C8n6hBilwsX"
+    },
+    {
+        "code": "020-100-MD02A3-Term",
+        "name": "020-100-MD02a3. Report chain of events \u2018due to\u2019 in order-Cause of death-Term",
+        "id": "IeS8V8Yf40N"
+    },
+    {
+        "code": "020-100-MD03A-Term",
+        "name": "020-100-MD03a. State the underlying cause-Term",
+        "id": "sJhOdGLD5lj"
+    },
+    {
+        "code": "020-100-MD01A-URI",
+        "name": "020-100-MD01a. Report disease or condition directly leading to death-Cause of death-URI",
+        "id": "k9xdBQzYMXo"
+    },
+    {
+        "code": "020-100-MD02A1-URI",
+        "name": "020-100-MD02a1. Report chain of events \u2018due to\u2019 in order-Cause of death-URI",
+        "id": "yftBZ5bSEOb"
+    },
+    {
+        "code": "020-100-MD02A2-URI",
+        "name": "020-100-MD02a2. Report chain of events \u2018due to\u2019 in order-Cause of death-URI",
+        "id": "fJUy96o8akn"
+    },
+    {
+        "code": "020-100-MD02A3-URI",
+        "name": "020-100-MD02a3. Report chain of events \u2018due to\u2019 in order-Cause of death-URI",
+        "id": "S53kx50gjQn"
+    },
+    {
+        "code": "020-100-MD03A-URI",
+        "name": "020-100-MD03a. State the underlying cause-URI",
+        "id": "L97MrANAav9"
+    },
+    {
+        "code": "TextA ",
+        "name": "020-100-SearchTextA ",
+        "id": "cSDJ9kSJkFP"
+    },
+    {
+        "code": "Textb",
+        "name": "020-100-SearchTextB",
+        "id": "uckvenVFnwf"
+    },
+    {
+        "code": "TextC ",
+        "name": "020-100-SearchTextC",
+        "id": "ZFdJRT3PaUd"
+    },
+    {
+        "code": "TextD",
+        "name": "020-100-SearchTextD",
+        "id": "Op5pSvgHo1M"
+    },
+    {
+        "code": "causeAsearch",
+        "name": "AltcauseAsearch",
+        "id": "QHY3iYRLvMp"
+    },
+    {
+        "code": "causeBsearch",
+        "name": "AltcauseBsearch",
+        "id": "NkiH8GTX6HC"
+    },
+    {
+        "code": "causeCsearch",
+        "name": "AltcauseCsearch",
+        "id": "SDPq8UURlWc"
+    },
+    {
+        "code": "causeDsearch",
+        "name": "AltcauseDsearch",
+        "id": "zqW9xWyqOur"
+    },
+    {
+        "code": "100-Approval ",
+        "name": "100-Approval ",
+        "id": "twVlVWM3ffz"
+    },
+    {
+        "code": "100-DD0A",
+        "name": "100-DD0A. I attended the deceased before death",
+        "id": "u9tYUv6AM51"
+    },
+    {
+        "code": "100-DD0B",
+        "name": "100-DD0B.I examined the body after death",
+        "id": "ZXZZfzBpu8a"
+    },
+    {
+        "code": "100-DD0C",
+        "name": "100-DD0C. I conducted the post mortem of the body",
+        "id": "cp5xzqVU2Vw"
+    },
+    {
+        "code": "100-DD0X",
+        "name": "100-DD0X. Declaration Other Specify",
+        "id": "lu9BiHPxNqH"
+    },
+    {
+        "code": "HMIS100. Referred",
+        "name": "HMIS100. Referred",
+        "id": "QDHeWslaEoH"
+    },
+    {
+        "code": "HMIS100. Referred From",
+        "name": "HMIS100. Referred From?",
+        "id": "WqYvFt79TQB"
+    },
+    {
+        "code": "HMIS100. Date of Birth Known",
+        "name": "HMIS100. Date of Birth Known",
+        "id": "roxn33dtLLx"
+    },
+    {
+        "code": "Religion",
+        "name": "Religion",
+        "id": "rcpgGFLMfOw"
+    },
+    {
+        "code": "100-MD-COUNTY",
+        "name": "100-MD-COUNTY",
+        "id": "se3wRj1bYPo"
+    },
+    {
+        "name": "Examined By",
+        "id": "PaoRZbokFWJ"
+    },
+    {
+        "code": "I attended the deceased before death",
+        "name": "HMIS_100_  I attended the deceased before death",
+        "id": "Kz29xNOBjsJ"
+    },
+    {
+        "code": "MCCoD_100_URI_Field",
+        "name": "HMIS_100_  URI_Field",
+        "id": "T4uxg60Lalw"
+    },
+    {
+        "code": "MCCoD_100_code_FINAL_underlying_cause",
+        "name": "HMIS_100_  code_FINAL_underlying_cause",
+        "id": "dTd7txVzhgY"
+    },
+    {
+        "code": "HIMS_10043",
+        "name": "HMIS_100_  other_significant_conditions_contributing_to_death_code",
+        "id": "ctbKSNV2cg7"
+    },
+    {
+        "code": "MCCoD_100_state_the_underlying_cause_uri_final",
+        "name": "HMIS_100_  state_the_underlying_cause_uri_final",
+        "id": "L97MrAMAav9"
+    },
+    {
+        "code": "HIMS_10043_2",
+        "name": "HMIS_100_  other_significant_conditions_contributing_to_death_code 2",
+        "id": "krhrEBwJeNC"
+    },
+    {
+        "code": "HIMS_10043_3",
+        "name": "HMIS_100_  other_significant_conditions_contributing_to_death_code 3",
+        "id": "ZKtS7L49Poo"
+    },
+    {
+        "code": "HIMS_10043_4",
+        "name": "HMIS_100_  other_significant_conditions_contributing_to_death_code 4",
+        "id": "fJDDc9mlubU"
+    },
+    {
+        "code": "HIMS_10043_5",
+        "name": "HMIS_100_  other_significant_conditions_contributing_to_death_code 5",
+        "id": "z89Wr84V2G6"
+    },
+    {
+        "code": "HIMS_10042_2",
+        "name": "HMIS_100_  Other significant conditions contributing to death (time intervals can be included in brackets after the condition) 2",
+        "id": "mI0UjQioE7E"
+    },
+    {
+        "code": "HIMS_10042_3",
+        "name": "HMIS_100_  Other significant conditions contributing to death (time intervals can be included in brackets after the condition) 3",
+        "id": "u5ebhwtAmpU"
+    },
+    {
+        "code": "HIMS_10042_4",
+        "name": "HMIS_100_  Other significant conditions contributing to death (time intervals can be included in brackets after the condition) 4",
+        "id": "OxJgcwH15L7"
+    },
+    {
+        "code": "HIMS_10042_5",
+        "name": "HMIS_100_  Other significant conditions contributing to death (time intervals can be included in brackets after the condition) 5",
+        "id": "Zrn8LD3LoKY"
+    },
+    {
+        "code": "HIMS_10042_7",
+        "name": "HMIS_100_ Final Underlying Cause Of Death code",
+        "id": "n2mScmFMovq"
+    },
+    {
+        "code": "HIMS_10042_6",
+        "name": "HMIS_100_ Final Underlying Cause Of Death text",
+        "id": "mQVAyOLbga1"
+    },
+    {
+        "code": "HIMS_10042_10",
+        "name": "HMIS_100_ Age in months",
+        "id": "n9s5bKgCCVq"
+    },
+    {
+        "code": "HIMS_10042_9",
+        "name": "HMIS_100_ Doris Underlying Cause Of Death code",
+        "id": "LAvyxs29laJ"
+    },
+    {
+        "code": "HIMS_10042_8",
+        "name": "HMIS_100_ Doris Underlying Cause Of Death text",
+        "id": "tKezaEs8Ez5"
+    },
+    {
+        "name": "HMIS_100_Linked (Migrated)",
+        "id": "ZkNDFfFSTYg"
+    }
+]

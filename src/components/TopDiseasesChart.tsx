@@ -528,6 +528,9 @@ export const TopDiseasesChart = observer(() => {
                  style={{
                     marginRight: "auto",
                     paddingLeft: "1rem",
+                    display: "flex",
+                    gap: "10px",
+                    alignItems: "center"
                  }}
              >
                 <Select
