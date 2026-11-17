@@ -1704,8 +1704,8 @@ export const DataEntryForm = observer(() => {
 
         };
         // "https://icd.who.int/doris/api/ucod/underlyingcauseofdeath/ICD11"
-        const burl = "https://ug.sk-engine.online";
-        // const burl = "https://hmis-dev.health.go.ug";
+        const burl = "https://hmis-dev.health.go.ug";
+        // const burl = "https://ug.sk-engine.online";
         const url = burl + "/icd/release/11/2024-01/doris?" + new URLSearchParams(payload);
         
         try {
@@ -1723,7 +1723,7 @@ export const DataEntryForm = observer(() => {
             });
 
             const nameres = await fetch(
-                res.uri.replace("http://id.who.int", "https://ug.sk-engine.cloud/icd-api"),
+                res.uri.replace("http://id.who.int", burl),
                 {
                     method: 'GET',
                     headers: {
@@ -2398,24 +2398,6 @@ export const DataEntryForm = observer(() => {
                                             onClick={onCancel}
                                         >
                                             {activeLanguage.lang["Cancel"]}
-                                        </Button>
-                                        
-                                        <Button
-                                            size="large"
-                                            onClick={loadFromCloud}
-                                            loading={cloudSyncing}
-                                            style={{ marginLeft: 8, backgroundColor: '#1890ff', color: 'white', border: 'none' }}
-                                        >
-                                            Load from Cloud
-                                        </Button>
-
-                                        <Button
-                                            size="large"
-                                            onClick={saveToCloud}
-                                            loading={cloudSyncing}
-                                            style={{ marginLeft: 8, backgroundColor: '#52c41a', color: 'white', border: 'none' }}
-                                        >
-                                            Save to Cloud
                                         </Button>
 
                                         <Button
@@ -6318,13 +6300,11 @@ export const DataEntryForm = observer(() => {
 
                     <table className="my-2 w-full border-collapse px-2">
                         <tbody>
-                            <tr>
-                                <Declarations
-                                    titleBackgroundColor={titleBackgroundColor}
-                                    receiveOutput={handleDeclarationOutput}
-                                    receiveOldData={declarationsDefault}
-                                />
-                            </tr>
+                            <Declarations
+                                titleBackgroundColor={titleBackgroundColor}
+                                receiveOutput={handleDeclarationOutput}
+                                receiveOldData={declarationsDefault}
+                            />
                             <tr>
                                 <td className="border p-1">
                                     <Row>

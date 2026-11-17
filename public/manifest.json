@@ -1,6 +1,6 @@
 {
   "short_name": "MCCOD",
-  "name": "Medical Certificate of Cause of Death",
+  "name": "MCCOD",
   "description": "DHIS2 Medical Certificate of Cause of Death (MCCOD) application for health information management",
   "icons": [
     {

@@ -110,68 +110,61 @@ function matchCodePrefixes(prefixes = [], code) {
 
 export class CauseOfDeathFilter implements EventFilter {
   apply(diseases: Record<string, any>, filter: string): Record<string, any> {
-    if (deathCodePrefixes[filter]) {
+    if (deathCodePrefixes[filter] && diseases) {
       return Object.keys(diseases)
         .filter((key) =>
-          matchCodePrefixes(deathCodePrefixes[filter], diseases[key].code)
+          diseases[key] && matchCodePrefixes(deathCodePrefixes[filter], diseases[key].code || "")
         )
         .reduce((d, key) => {
           d[key] = diseases[key];
           return d;
         }, {});
     }
-    return diseases;
+    return diseases || {};
   }
 }
 
 export class MortalityFilter implements EventFilter {
   apply(diseases: Record<string, any>, filter: string): Record<string, any> {
-    if (filter) {
+    if (filter && diseases) {
       Object.keys(diseases).forEach((key) => {
-        let count = diseases[key].count;
+        if (!diseases[key]) return;
+        let count = diseases[key].count || 0;
         let affected = diseases[key].affected;
 
         if (count > 0 && affected) {
           affected = affected.filter(d => filterbyLifeDuration(d.dob, d.dod, filter))
+        } else {
+          affected = affected || [];
         }
         diseases[key].count = affected.length;
         diseases[key].affected = affected;
       });
 
     }
-    return diseases;
+    return diseases || {};
   }
 }
 
 export class GenderFilter implements EventFilter {
   apply(diseases: Record<string, any>, filter: string): Record<string, any> {
-    if (filter) {
-      // return Object.keys(diseases)
-      //   .map((key) => {
-      //     const d = diseases[key];
-      //     const f = d.gender === filter;
-      //     // console.log(f, filter);
-      //     if (!f && d.count > 0) d.count -= 1;
-      //     return d;
-      //   })
-      //   .reduce((d, c) => {
-      //     d[c.name] = c;
-      //     return d;
-      //   }, {});
+    if (filter && diseases) {
         Object.keys(diseases).forEach((key) => {
-          let count = diseases[key].count;
+          if (!diseases[key]) return;
+          let count = diseases[key].count || 0;
           let affected = diseases[key].affected;
 
-          if (count > 0 && diseases[key].affected) {
-            affected = diseases[key].affected.filter((d) => d.gender === filter );     
-            
+          if (count > 0 && affected) {
+            affected = affected.filter((d) => d.gender === filter );     
+          } else {
+            affected = affected || [];
           }
           diseases[key].count = affected.length;
-          diseases[key].affected = affected
+          diseases[key].affected = affected;
         });
         return diseases;
     }
-    return diseases;
+    return diseases || {};
   }
 }
 

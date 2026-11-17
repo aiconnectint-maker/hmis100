@@ -122,8 +122,8 @@ export const App = observer(() => {
 
   return (
     <StoreContext.Provider value={store}>
-      {/* <HeaderBar
-        appName={" Medical Certificate of Cause of Death"}
+      {/* {<HeaderBar
+        appName={"MCCOD"}
         style={{
           left: 0,
           position: "fixed",
@@ -131,7 +131,7 @@ export const App = observer(() => {
           width: "100%",
           zIndex: 1000,
         }}
-      /> */}
+      />} */}
       {store.currentPage === "4" ? (
         <div className="p-2">
           <ApiConfigPage />

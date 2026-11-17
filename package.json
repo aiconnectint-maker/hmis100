@@ -1,6 +1,6 @@
 {
-  "name": "mccod",
-  "version": "0.1.0",
+  "name": "MCCOD",
+  "version": "3.0",
   "private": true,
   "homepage": ".",
   "cacheVersion": "1",
@@ -56,7 +56,9 @@
   },
   "scripts": {
     "start": "react-app-rewired start",
-    "build": "d2-manifest package.json ./public/manifest.webapp && react-app-rewired build && cd build",
+    "build": "d2-manifest package.json ./public/manifest.webapp && react-app-rewired build",
+    "pack": "python package-zip.py",
+    "build:pack": "npm run build && python package-zip.py",
     "test": "react-app-rewired test",
     "eject": "react-app-rewired eject",
     "commit": "git add . && git commit && git push"
@@ -77,9 +79,9 @@
     ]
   },
   "manifest.webapp": {
-    "version": "2.0.0",
-    "name": " Medical Certificate of Cause of Death",
-    "description": " Medical Certificate of Cause of Death",
+    "version": "3.0",
+    "name": "Medical Certificate of Cause of Death",
+    "description": "Medical Certificate of Cause of Death",
     "launch_path": "index.html",
     "icons": {
       "16": "assets/icons/image001.png",

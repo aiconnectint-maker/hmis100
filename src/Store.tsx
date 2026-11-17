@@ -307,7 +307,7 @@ class Store {
 	@observable attributesExist: boolean | null = null;
 	@observable topDiseases: any;
 	@observable selectedCauseOfDeath: string | null = null;
-	@observable allDiseases: any;
+	@observable allDiseases: any = {};
 	@observable allIndis: any = {};
 	@observable prevDiseases: any;
 	@observable prevDiseaseOrgUnits: any = {};
@@ -1203,12 +1203,31 @@ class Store {
 		}
 	};
 
+	@action getFacilityLevel = async () => {
+		try {
+			const res: any = await this.engine.link.fetch(
+				"/api/organisationUnitLevels.json?fields=id,name,level&paging=false"
+			);
+			const levels = res?.organisationUnitLevels || [];
+			const facilityLvl = levels.find((lvl: any) =>
+				/facilit/i.test(lvl.name)
+			);
+			if (facilityLvl && facilityLvl.level) {
+				return facilityLvl.level;
+			}
+		} catch (error) {
+			console.log("Error determining facility level:", error);
+		}
+		return 6; // Default to level 6 for Uganda restructured DHIS2 hierarchy
+	};
+
 	@action getFacilities = async () => {
 		try {
+			const facilityLevel = await this.getFacilityLevel();
 			const url =
-				"/api/organisationUnits.json?level=5&paging=false&fields=id,displayName";
+				`/api/organisationUnits.json?level=${facilityLevel}&paging=false&fields=id,displayName`;
 
-			// Get the list of all facilities (level 5)
+			// Get the list of all facilities (dynamically determined level, e.g. level 6)
 			const result = await this.engine.link.fetch(url);
 
 			console.log("Result of facilities fetch is ", result);
@@ -1847,6 +1866,7 @@ class Store {
 			this.loadingTopDiseases = false;
 		} catch (e) {
 			console.log(e);
+			this.allDiseases = {};
 			this.topDiseases = [];
 			this.loadingTopDiseases = false;
 		}
